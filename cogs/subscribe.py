@@ -84,7 +84,7 @@ class Subscribe(commands.Cog):
         if channel == None:
             if await self.subgremove(g.id): return
         try:
-            await channel.get_message(message)
+            await channel.fetch_message(message)
         except (discord.NotFound, discord.Forbidden):
             if await self.subgremove(g.id): return
 
@@ -96,7 +96,7 @@ class Subscribe(commands.Cog):
 
         guild = self.bot.get_guild(guild)
         channel = guild.get_channel(channel)
-        message = await channel.get_message(message)
+        message = await channel.fetch_message(message)
         await message.edit(embed = em)
 
     async def subgtask(self):
