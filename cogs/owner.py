@@ -19,7 +19,7 @@ class Owner(commands.Cog):
     async def cmdauthcheck(ctx): # pylint: disable=E0213
         guild = ctx.bot.get_guild(499357399690379264)
         role = guild.get_role(531176653184040961)
-        user = guild.fetch_member(ctx.author.id) # pylint: disable=E1101
+        user = guild.get_member(ctx.author.id) # pylint: disable=E1101
         try:
             if role in user.roles:
                 return True
