@@ -19,7 +19,7 @@ class Owner(commands.Cog):
     async def cmdauthcheck(ctx): # pylint: disable=E0213
         guild = ctx.bot.get_guild(499357399690379264)
         role = guild.get_role(531176653184040961)
-        user = guild.get_member(ctx.author.id) # pylint: disable=E1101
+        user = guild.fetch_member(ctx.author.id) # pylint: disable=E1101
         try:
             if role in user.roles:
                 return True
@@ -54,7 +54,6 @@ class Owner(commands.Cog):
         em.add_field(name = "Authorized", value = f"`{guild.name}` has been authorized")
         await ctx.send(embed = em)
 
-    # Deauthorize command
     @commands.command()
     @commands.check(cmdauthcheck)
     async def deauthorize(self, ctx, g: int = None):
@@ -109,8 +108,7 @@ class Owner(commands.Cog):
                 extension = extension.replace("/", ".")
 
                 try:
-                    self.bot.unload_extension(extension)
-                    self.bot.load_extension(extension)
+                    self.bot.reload_extension(extension)
                 except ModuleNotFoundError:
                     continue
                 except Exception as error:
