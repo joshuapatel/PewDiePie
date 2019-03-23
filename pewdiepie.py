@@ -95,9 +95,6 @@ class PewDiePie(commands.AutoShardedBot):
             await self.stop()
 
     async def stop(self):
-        for cog in self.cogs:
-            self.unload_extension(cog)
-
         await self.pool.close()
         await super().logout()
 
