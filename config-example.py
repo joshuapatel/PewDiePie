@@ -1,5 +1,5 @@
 """
-Rename this file to config.py. You will need PostgreSQL, git, discord.py rewrite, and asyncpg.
+Rename this file to config.py. You will need PostgreSQL, git, discord.py rewrite, asyncpg, and jishaku.
 
 Download PostgreSQL: https://www.postgresql.org/download/
 
@@ -8,6 +8,8 @@ Download git: https://git-scm.com/download/
 discord.py rewrite: `pip install -U git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]`
 
 asyncpg: `pip install -U asyncpg`
+
+jishaku: `pip install -U jishaku`
 """
 
 privtoken = "" # Use this token for testing on your development bot
