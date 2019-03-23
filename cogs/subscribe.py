@@ -25,13 +25,17 @@ class Subscribe(commands.Cog):
             guild["guildid"] = info["guildid"]
             guild["msgid"] = info["msgid"]
 
-        if "subgap" in self.bot.tasks:
-            self.bot.tasks["subgap"].cancel()
-        if "subgap_ovpt" in self.bot.tasks:
-            self.bot.tasks["subgap_ovpt"].cancel()
+        for task in self.bot.tasks:
+            if task.startswith("subgap"):
+                self.bot.tasks[task].cancel()
 
-        self.bot.tasks["subgap"] = self.bot.loop.create_task(self.subgtask())
-        self.bot.tasks["subgap_ovpt"] = self.bot.loop.create_task(self.subgovpt())
+        tasks = {
+            "subgap": self.bot.loop.create_task(self.subgtask()),
+            "subgap_ovpt": self.bot.loop.create_task(self.subgovpt()),
+            "subgap_check": self.bot.loop.create_task(self.subgupcheck())
+        }
+
+        self.bot.tasks.update(tasks)
 
     async def subgupcache(self, channel: int, guild: int, message: int):
         gdict = self.bot.subgap["guild"][guild] = {}
@@ -120,6 +124,17 @@ class Subscribe(commands.Cog):
 
             await asyncio.sleep(30)
 
+    async def subgupcheck(self):
+        await self.bot.wait_until_ready()
+
+        while not self.bot.is_closed():
+            if "subgap" not in self.bot.tasks:
+                continue
+            if self.bot.tasks["subgap"].done():
+                await self.subgcache()
+
+            await asyncio.sleep(15)
+
     @commands.group(invoke_without_command = True)
     @commands.has_permissions(manage_guild = True)
     async def subgap(self, ctx):
@@ -169,7 +184,7 @@ class Subscribe(commands.Cog):
     @commands.command(aliases = ["subscribercount", "sc"])
     async def subcount(self, ctx, _type = True):
         if _type: await ctx.channel.trigger_typing()
-        
+
         base_uri = "https://www.googleapis.com/youtube/v3/channels"
         pew_chid = "UC-lHJZR3Gqxm24_Vd_AJ5Yw"
         ts_chid = "UCq-Fj5jknLsUf-MWSy4_brA"
