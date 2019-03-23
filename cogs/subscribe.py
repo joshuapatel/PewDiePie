@@ -71,12 +71,14 @@ class Subscribe(commands.Cog):
             if self.bot.subgap["rmusr"]["delete"]:
                 if self.bot.subgap["rmusr"]["t_time"] >= 5:
                     self.bot.tasks["subgap"].cancel()
+                    self.bot.tasks["subgap_check"].cancel()
                 else:
                     await asyncio.sleep(5)
                     if self.bot.subgap["rmusr"]["t_time"] <= 5:
                         self.bot.subgap["rmusr"]["delete"] = False
                     else:
                         self.bot.tasks["subgap"].cancel()
+                        self.bot.tasks["subgap_check"].cancel()
 
             await asyncio.sleep(15)
 
