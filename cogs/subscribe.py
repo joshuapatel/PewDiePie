@@ -99,6 +99,7 @@ class Subscribe(commands.Cog):
     async def subgedit(self, channel: int, guild: int, message: int, msg: str):
         em = discord.Embed(color = discord.Color.blurple())
         em.add_field(name = "Leading Channel", value = msg)
+        em.timestamp = dt.utcnow()
 
         guild = self.bot.get_guild(guild)
         channel = guild.get_channel(channel)
@@ -161,6 +162,7 @@ class Subscribe(commands.Cog):
         info = await self.subcount.callback(None, None, False) # pylint: disable=no-member
         em = discord.Embed(color = discord.Color.blurple())
         em.add_field(name = "Leading Channel", value = info)
+        em.timestamp = dt.utcnow()
         stmsg = await ctx.send(embed = em)
 
         await self.bot.pool.execute("INSERT INTO subgap VALUES ($1, $2, $3)", stmsg.id, ctx.channel.id, ctx.guild.id)
