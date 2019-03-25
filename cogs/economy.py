@@ -43,6 +43,7 @@ class Economy(commands.Cog):
             await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
             await Economy.up_usercache(ctx, ctx.guild.id, ctx.author.id)
             return True
+
         return False
         # pylint: enable=E1101
 
@@ -156,7 +157,7 @@ class Economy(commands.Cog):
         em = discord.Embed(color = discord.Color.blue())
         em.set_author(name = f"{uid.name}#{uid.discriminator}", icon_url = uid.avatar_url)
         em.add_field(name = "Bro Coins", value = f"{bal:,d} {self.tcoinimage}")
-        em.add_field(name = "Shovel Uses", value = f"{uses:,d} {u}")
+        em.add_field(name = "Economy Uses", value = f"{uses:,d} {u}")
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["lb", "lead", "board", "leadboard"])
