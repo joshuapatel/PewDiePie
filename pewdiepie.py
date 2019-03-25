@@ -30,7 +30,8 @@ extensions = (
     "cogs.functions", "jishaku", "cogs.economy", "cogs.general",
     "cogs.subscribe", "cogs.owner", "cogs.error_handler",
     "cogs.events", "cogs.economy_phrases", "cogs.economy_shop",
-    "cogs.economy_owner", "cogs.help", "cogs.disstrack", "cogs.snipe"
+    "cogs.economy_owner", "cogs.help", "cogs.disstrack", "cogs.snipe",
+    "cogs.economy_crime"
 )
 
 class PewDiePie(commands.AutoShardedBot):
@@ -88,7 +89,7 @@ class PewDiePie(commands.AutoShardedBot):
                 print(f"\n{error}")
 
     async def start(self):
-        await self.login(config.pubtoken) # pylint: disable=no-member
+        await self.login(config.privtoken) # pylint: disable=no-member
         try:
             await self.connect()
         except KeyboardInterrupt:
