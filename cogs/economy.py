@@ -66,7 +66,7 @@ class Economy(commands.Cog):
         return freturn
 
     # Shovel command
-    @commands.command(aliases = ["shove;", "shove", "shv", "sh", "shb"])
+    @commands.command(aliases = ["shove;", "shove", "shv", "sh", "work"])
     @commands.check(cad_user)
     @commands.cooldown(5, 10, commands.BucketType.member)
     async def shovel(self, ctx):
