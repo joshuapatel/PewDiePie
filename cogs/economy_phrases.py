@@ -44,7 +44,7 @@ class EconomyPhrases(commands.Cog):
     @commands.is_owner()
     async def add(self, ctx, fate: bool, *, phrase: str):
         if phrase.startswith("<-- ADD CRIME -->"):
-            phrase = phrase.strip("<-- ADD CRIME -->")
+            phrase = phrase.replace("<-- ADD CRIME -->", "")
             table = "crime"
         else:
             table = "shovel"
@@ -70,7 +70,7 @@ class EconomyPhrases(commands.Cog):
     @commands.is_owner()
     async def edit(self, ctx, pid: int, *, phrase: str):
         if phrase.startswith("<-- EDIT CRIME -->"):
-            phrase = phrase.strip("<-- EDIT CRIME -->")
+            phrase = phrase.replace("<-- EDIT CRIME -->", "")
             table = "crime"
         else:
             table = "shovel"
