@@ -47,25 +47,6 @@ class Economy(commands.Cog):
         return False
         # pylint: enable=E1101
 
-    # Economy message
-    async def econmsg(self, fate: bool, ctg: int):
-        if fate:
-            phrases = self.bot.econ["pos"]
-        else:
-            phrases = self.bot.econ["neg"]
-        
-        try:
-            phrases = random.choice(phrases)
-        except IndexError:
-            phrases = {"id": 1, "name": "You need {ctg} {tcoinimage} to add phrases."}
-
-        phraseid = phrases["id"]
-        freturnp = phrases["name"].replace("{ctg}", str(format(ctg, ",d"))).replace("{tcoinimage}", self.tcoinimage)
-
-        freturn = (freturnp, phraseid)
-        return freturn
-
-    # Shovel command
     @commands.command(aliases = ["shove;", "shove", "shv", "sh", "work"])
     @commands.check(cad_user)
     @commands.cooldown(5, 10, commands.BucketType.member)
@@ -74,18 +55,25 @@ class Economy(commands.Cog):
 
         if fate:
             ctg = random.randint(1, 1500)
+            phrases = self.bot.econ["pos"]
         else:
             ctg = -random.randint(1, 700)
+            phrases = self.bot.econ["neg"]
 
-        message = await self.econmsg(fate, ctg)
+        try:
+            phrases = random.choice(phrases)
+        except IndexError:
+            phrases = {"id": 1, "name": "You need {ctg} {tcoinimage} to add shovel phrases."}
+
+        message = phrases["name"].replace("{ctg}", f"{ctg:,d}").replace("{tcoinimage}", self.tcoinimage)
 
         if fate:
             em = discord.Embed(color = discord.Color.green())
         else:
             em = discord.Embed(color = discord.Color.red())
 
-        em.add_field(name = "Shovel", value = message[0])
-        em.set_footer(text = f"Phrase #{message[1]:,d}")
+        em.add_field(name = "Shovel", value = message)
+        em.set_footer(text = f"Phrase #{phrases['id']:,d}")
         await ctx.send(embed = em)
 
         await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
