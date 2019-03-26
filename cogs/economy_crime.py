@@ -50,14 +50,14 @@ class EconomyCrime(commands.Cog):
         except IndexError:
             phrases = {"id": 1, "name": "You need {ctg} {tcoinimage} to add crime phrases."}
 
-        phrases["name"] = phrases["name"].replace("{ctg}", f"{ctg:,d}").replace("{tcoinimage}", self.tcoinimage)
+        message = phrases["name"].replace("{ctg}", f"{ctg:,d}").replace("{tcoinimage}", self.tcoinimage)
 
         if fate:
             em = discord.Embed(color = discord.Color.green())
         else:
             em = discord.Embed(color = discord.Color.red())
 
-        em.add_field(name = "Crime", value = phrases["name"])
+        em.add_field(name = "Crime", value = message)
         em.set_footer(text = f"Phrase #{phrases['id']:,d}")
         await ctx.send(embed = em)
 
