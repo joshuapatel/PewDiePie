@@ -16,6 +16,7 @@ class Subscribe(commands.Cog):
     async def subgcache(self):
         self.bot.subgap = {"guildid": {}}
         self.bot.subgap["rmusr"] = {"time": [], "delete": False, "t_time": 0}
+
         information = await self.bot.pool.fetch("SELECT * FROM subgap")
 
         for info in information:
@@ -166,7 +167,7 @@ class Subscribe(commands.Cog):
             prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Subscriber Gap in Use",
-            value = f"The subgap command is being used in your server already. Please delete the subgap message or run `{prefix}subgap stop`.")
+            value = f"The subgap command is being used in your server already. Please delete the subgap message and wait 30 seconds or run `{prefix}subgap stop`.")
             await ctx.send(embed = em)
             return
 
