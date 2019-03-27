@@ -137,6 +137,7 @@ class Subscribe(commands.Cog):
             self.bot.tasks["subgap"].cancel()
             # don't kill subgcheck() because it'll restart and hopefully
             # discord will be back on again
+            return
 
         await self.subgedit(channel.id, g.id, message, submsg)
 
