@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import humanize
 
 
 class ErrorHandler(commands.Cog):
@@ -54,45 +55,10 @@ class ErrorHandler(commands.Cog):
             await ctx.send(embed = em)
 
         elif isinstance(error, commands.CommandOnCooldown):
-            # Time
-            seconds = int(error.retry_after)
-            seconds = round(seconds, 2)
-            hours, remainder = divmod(int(seconds), 3600)
-            minutes, seconds = divmod(remainder, 60)
-            # Timing wording
-            if hours > 1:
-                hours = f"{hours} hours"
-            elif hours == 1:
-                hours = f"{hours} hour"
-            else:
-                hours = ""
-            if minutes > 1:
-                minutes = f"{minutes} minutes"
-            elif minutes == 1:
-                minutes = f"{minutes} minute"
-            else:
-                minutes = ""
-            if seconds > 1:
-                seconds = f"{seconds} seconds"
-            elif seconds == 1:
-                seconds = f"{seconds} second"
-            else:
-                seconds = ""
-
-            if hours != "":
-                ist = "and"
-            else:
-                ist = ""
-            if seconds != "":
-                if minutes != "":
-                    ist1 = "and"
-                else:
-                    ist1 = ""
-            else:
-                ist1 = ""
+            time = humanize.naturaldelta(error.retry_after)
 
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Error: Cooldown", value = f"Please wait {hours} {ist} {minutes} {ist1} {seconds} to use `{ctx.command.name}` again")
+            em.add_field(name = "Error: Cooldown", value = f"Please wait {time} to use `{ctx.command.name}` again")
             await ctx.send(embed = em)
 
 
