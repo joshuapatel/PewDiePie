@@ -14,13 +14,13 @@ class Subscribe(commands.Cog):
         self.bot = bot
 
     async def subgcache(self):
-        self.bot.subgap = {"guild": {}}
+        self.bot.subgap = {"guildid": {}}
         self.bot.subgap["rmusr"] = {"time": [], "delete": False, "t_time": 0}
         information = await self.bot.pool.fetch("SELECT * FROM subgap")
 
         for info in information:
-            self.bot.subgap["guild"][info["guildid"]] = {}
-            guild = self.bot.subgap["guild"][info["guildid"]]
+            self.bot.subgap["guildid"][info["guildid"]] = {}
+            guild = self.bot.subgap["guildid"][info["guildid"]]
             guild["channelid"] = info["channelid"]
             guild["guildid"] = info["guildid"]
             guild["msgid"] = info["msgid"]
@@ -38,7 +38,7 @@ class Subscribe(commands.Cog):
         self.bot.tasks.update(tasks)
 
     async def subgupcache(self, channel: int, guild: int, message: int):
-        gdict = self.bot.subgap["guild"][guild] = {}
+        gdict = self.bot.subgap["guildid"][guild] = {}
         gdict["channelid"] = channel
         gdict["guildid"] = guild
         gdict["msgid"] = message
@@ -56,12 +56,12 @@ class Subscribe(commands.Cog):
                 rmusr["time"].clear()
                 return True
 
-        if "keep_alive" in self.bot.subgap["guild"][guild]:
+        if "keep_alive" in self.bot.subgap["guildid"][guild]:
             return False
 
         await self.bot.pool.execute("INSERT INTO subgapbackup SELECT * FROM subgap WHERE guildid = $1", guild)
         await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
-        self.bot.subgap["guild"].pop(guild)
+        self.bot.subgap["guildid"].pop(guild)
         rmusr["time"].append(round(dt.timestamp(dt.utcnow())))
 
         return True
@@ -82,30 +82,6 @@ class Subscribe(commands.Cog):
 
             await asyncio.sleep(15)
 
-    async def subgcheck(self, channel: int, guild: int, message: int, submsg: str):
-        g = self.bot.get_guild(guild)
-        if g == None:
-            if await self.subgremove(guild): return
-        channel = g.get_channel(channel)
-        if channel == None:
-            if await self.subgremove(g.id): return
-        try:
-            await channel.fetch_message(message)
-        except (discord.NotFound, discord.Forbidden):
-            if await self.subgremove(g.id): return
-
-        await self.subgedit(channel.id, g.id, message, submsg)
-
-    async def subgedit(self, channel: int, guild: int, message: int, msg: str):
-        em = discord.Embed(color = discord.Color.blurple())
-        em.add_field(name = "Leading Channel", value = msg)
-        em.timestamp = dt.utcnow()
-
-        guild = self.bot.get_guild(guild)
-        channel = guild.get_channel(channel)
-        message = await channel.fetch_message(message)
-        await message.edit(embed = em)
-
     async def subgtask(self):
         await self.bot.wait_until_ready()
         cont = True
@@ -117,8 +93,8 @@ class Subscribe(commands.Cog):
                     except KeyError:
                         cont = False
                         return
-                    for sub in self.bot.subgap["guild"]:
-                        guild = self.bot.subgap["guild"][sub]
+                    for sub in self.bot.subgap["guildid"]:
+                        guild = self.bot.subgap["guildid"][sub]
                         await self.subgcheck(guild["channelid"], sub, guild["msgid"], info)
                     break
                 except RuntimeError:
@@ -137,6 +113,41 @@ class Subscribe(commands.Cog):
                 await self.subgcache()
 
             await asyncio.sleep(15)
+
+    async def subgcheck(self, channel: int, guild: int, message: int, submsg: str):
+        g = self.bot.get_guild(guild)
+
+        if g == None:
+            if await self.subgremove(guild):
+                return
+
+        channel = g.get_channel(channel)
+
+        if channel == None:
+            if await self.subgremove(g.id):
+                return
+
+        try:
+            await channel.fetch_message(message)
+        except (discord.NotFound, discord.Forbidden):
+            if await self.subgremove(g.id):
+                return
+        except discord.ConnectionClosed:
+            self.bot.tasks["subgap"].cancel()
+            # don't kill subgcheck() because it'll restart and hopefully
+            # discord will be back on again
+
+        await self.subgedit(channel.id, g.id, message, submsg)
+
+    async def subgedit(self, channel: int, guild: int, message: int, msg: str):
+        em = discord.Embed(color = discord.Color.blurple())
+        em.add_field(name = "Leading Channel", value = msg)
+        em.timestamp = dt.utcnow()
+
+        guild = self.bot.get_guild(guild)
+        channel = guild.get_channel(channel)
+        message = await channel.fetch_message(message)
+        await message.edit(embed = em)
 
     @commands.group(invoke_without_command = True)
     @commands.has_permissions(manage_guild = True)
