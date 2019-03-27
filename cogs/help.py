@@ -9,15 +9,17 @@ class Help(commands.Cog):
 
     @commands.group(invoke_without_command = True)
     async def help(self, ctx):
+        appinfo = await self.bot.application_info()
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
-        em.set_author(name = f"{self.bot.user.name} Commands")
+        em.set_author(name = f"Help Manual for {self.bot.user.name}")
+        em.set_thumbnail(url = appinfo.icon_url)
 
-        em.add_field(name = "Main", value = f"{prefix}help main")
-        em.add_field(name = "Meta", value = f"{prefix}help meta")
-        em.add_field(name = "Economy", value = f"{prefix}help economy")
-        em.add_field(name = "Economy Shop", value = f"{prefix}help shop")
-        em.add_field(name = "Snipe", value = f"{prefix}help snipe")
+        em.add_field(name = "Main", value = f"{prefix}help main", inline = False)
+        em.add_field(name = "Meta", value = f"{prefix}help meta", inline = False)
+        em.add_field(name = "Economy", value = f"{prefix}help economy", inline = False)
+        em.add_field(name = "Economy Shop", value = f"{prefix}help shop", inline = False)
+        em.add_field(name = "Snipe", value = f"{prefix}help snipe", inline = False)
 
         await ctx.send(embed = em)
 
