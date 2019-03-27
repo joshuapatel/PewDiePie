@@ -14,7 +14,7 @@ class Subscribe(commands.Cog):
         self.bot = bot
 
     async def subgcache(self):
-        self.bot.subgap = {"guildid": {}}
+        self.bot.subgap["guildid"] = {}
         self.bot.subgap["rmusr"] = {"time": [], "delete": False, "t_time": 0}
 
         information = await self.bot.pool.fetch("SELECT * FROM subgap")
