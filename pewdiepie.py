@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 import config
-import random
+from random import randint
 import datetime
 import asyncpg
-import aiohttp
 import asyncio
 import sys
+import os
 
 # Supports asyncio subprocesses for Windows
 if sys.platform == "win32":
@@ -18,7 +18,7 @@ async def custom_prefix(bot, message):
     try:
         prefix = bot.prefixes.get(message.guild.id)
     except AttributeError:
-        rnd = random.randint(12**2, 12**4)
+        rnd = randint(12**2, 12**4)
         return str(rnd)
 
     if prefix == None:
@@ -26,13 +26,11 @@ async def custom_prefix(bot, message):
     else:
         return commands.when_mentioned_or(prefix)(bot, message)
 
-extensions = (
-    "cogs.functions", "jishaku", "cogs.economy", "cogs.general",
-    "cogs.subscribe", "cogs.owner", "cogs.error_handler",
-    "cogs.events", "cogs.economy_crime", "cogs.economy_phrases",
-    "cogs.economy_shop", "cogs.economy_owner", "cogs.help",
-    "cogs.disstrack", "cogs.snipe"
-)
+extensions = ["jishaku", "cogs.functions"]
+
+for f in os.listdir("cogs"):
+    if f.endswith(".py") and not f"cogs.{f[:-3]}" in extensions:
+        extensions.append("cogs." + f[:-3])
 
 class PewDiePie(commands.AutoShardedBot):
     def __init__(self):
