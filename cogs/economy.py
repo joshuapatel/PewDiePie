@@ -4,6 +4,22 @@ import random
 import datetime
 
 
+class AmountConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            return int(argument)
+        except:
+            pass
+        if "all" in argument:
+            coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+            if ctx.command.name == "transfer":
+                coins = round(coins * 0.5)
+            return coins
+        elif "," in argument:
+            return int(argument.replace(",", ""))
+        else:
+            return 0
+
 class Economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -37,6 +53,7 @@ class Economy(commands.Cog):
             ctx.bot.econ["users"]["guildid"][ctx.guild.id] = {}
 
         dc = ctx.bot.econ["users"]["guildid"][ctx.guild.id]
+
         if ctx.author.id in dc:
             return True
         else:
@@ -78,22 +95,6 @@ class Economy(commands.Cog):
 
         await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
         await self.bot.pool.execute("UPDATE econ SET uses = uses + 1 WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
-
-    class AmountConverter(commands.Converter):
-        async def convert(self, ctx, argument):
-            try:
-                return int(argument)
-            except:
-                pass
-            if "all" in argument:
-                coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
-                if ctx.command.name == "transfer":
-                    coins = round(coins * 0.5)
-                return coins
-            elif "," in argument:
-                return int(argument.replace(",", ""))
-            else:
-                return 0
 
     @commands.command(aliases = ["give", "givemoney", "send", "sendmoney", "add", "addmoney"])
     @commands.check(cad_user)

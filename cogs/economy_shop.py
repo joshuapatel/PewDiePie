@@ -3,6 +3,22 @@ from discord.ext import commands
 import datetime
 
 
+class AmountConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            return int(argument)
+        except:
+            pass
+        if "all" in argument:
+            coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+            if ctx.command.name == "transfer":
+                coins = round(coins * 0.5)
+            return coins
+        elif "," in argument:
+            return int(argument.replace(",", ""))
+        else:
+            return 0
+
 class EconomyShop(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -16,20 +32,6 @@ class EconomyShop(commands.Cog):
         else:
             return True
         return False
-
-    class AmountConverter(commands.Converter):
-        async def convert(self, ctx, argument):
-            try:
-                return int(argument)
-            except:
-                pass
-            if "all" in argument:
-                coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
-                return coins
-            elif "," in argument:
-                return int(argument.replace(",", ""))
-            else:
-                return 0
 
     @commands.group(invoke_without_command = True)
     async def shop(self, ctx):

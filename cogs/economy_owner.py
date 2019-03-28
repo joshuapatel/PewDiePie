@@ -3,25 +3,26 @@ from discord.ext import commands
 import datetime
 
 
+class AmountConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            return int(argument)
+        except:
+            pass
+        if "all" in argument:
+            coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+            if ctx.command.name == "transfer":
+                coins = round(coins * 0.5)
+            return coins
+        elif "," in argument:
+            return int(argument.replace(",", ""))
+        else:
+            return 0
+
 class EconomyOwner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tcoinimage = "<:bro_coin:541363630189576193>"
-
-    class AmountConverter(commands.Converter):
-        async def convert(self, ctx, argument):
-            try:
-                return int(argument)
-            except:
-                pass
-            if "all" in argument:
-                # Get users coins
-                coins = await ctx.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
-                return coins
-            elif "," in argument:
-                return int(argument.replace(",", ""))
-            else:
-                return 0
 
     @commands.command()
     @commands.is_owner()
