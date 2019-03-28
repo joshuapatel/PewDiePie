@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import humanize
+from humanize import naturaldelta
 
 
 class ErrorHandler(commands.Cog):
@@ -9,7 +9,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown) == False:
+        if not isinstance(error, commands.CommandOnCooldown):
             try:
                 self.bot.get_command(ctx.command.name).reset_cooldown(ctx)
             except AttributeError:
@@ -55,7 +55,7 @@ class ErrorHandler(commands.Cog):
             await ctx.send(embed = em)
 
         elif isinstance(error, commands.CommandOnCooldown):
-            time = humanize.naturaldelta(error.retry_after)
+            time = naturaldelta(error.retry_after)
 
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Error: Cooldown", value = f"Please wait {time} to use `{ctx.command.name}` again")
