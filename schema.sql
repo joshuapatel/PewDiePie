@@ -54,3 +54,12 @@ CREATE TABLE IF NOT EXISTS subgapbackup (
     channelid BIGINT NOT NULL,
     guildid BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS warns (
+    userid BIGINT NOT NULL,
+    guildid BIGINT NOT NULL,
+    issuerid BIGINT NOT NULL,
+    issuername TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    time TIMESTAMP NOT NULL
+);
