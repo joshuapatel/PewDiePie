@@ -98,7 +98,7 @@ class PewDiePie(commands.AutoShardedBot):
         await super().logout()
 
     def run(self):
-        loop = asyncio.get_event_loop()
+        loop = self.loop
         try:
             loop.run_until_complete(self.start())
         except KeyboardInterrupt:
