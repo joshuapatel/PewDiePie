@@ -160,6 +160,14 @@ class Moderation(commands.Cog):
         em.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed = em)
 
+        em = discord.Embed(color = discord.Color.red())
+        em.add_field(name = f"Warned: {ctx.guild.name}", value = reason)
+        em.timestamp = datetime.datetime.utcnow()
+        try:
+            await user.send(embed = em)
+        except discord.Forbidden:
+            pass
+
     @commands.command(aliases = ["warnings"])
     async def warns(self, ctx, *, user: discord.Member = None):
         if user == None:
