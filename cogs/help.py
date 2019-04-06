@@ -20,6 +20,7 @@ class Help(commands.Cog):
         em.add_field(name = "Economy", value = f"{prefix}help economy", inline = False)
         em.add_field(name = "Economy Shop", value = f"{prefix}help shop", inline = False)
         em.add_field(name = "Snipe", value = f"{prefix}help snipe", inline = False)
+        em.add_field(name = "Moderation", value = f"{prefix}help moderation", inline = False)
 
         await ctx.send(embed = em)
 
@@ -112,6 +113,29 @@ class Help(commands.Cog):
         Snipes the last deleted message sent by a bot in the current channel
         """, inline = False)
         em.set_footer(text = "If you would like a snipe removed, please DM me with the message ID")
+
+        await ctx.send(embed = em)
+
+    @help.command()
+    async def moderation(self, ctx):
+        em = discord.Embed(color = discord.Color.gold())
+        prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
+        em.set_author(name = "Moderation Commands")
+
+        em.add_field(name = f"{prefix}ban [@user] [optional: reason]", value = "Bans a member",
+        inline = False)
+        em.add_field(name = f"{prefix}kick [@user] [optional: reason]", value = "Kicks a member",
+        inline = False)
+        em.add_field(name = f"{prefix}purge [amount of messages]", value = "Purges a specified amount of messages from the channel",
+        inline = False)
+        em.add_field(name = f"{prefix}deafen [@user]", value = "Deafens a user. They must be in a voice channel",
+        inline = False)
+        em.add_field(name = f"{prefix}undeafen [@user]", value = "Undeafens a user. They must be in a voice channel",
+        inline = False)
+        em.add_field(name = f"{prefix}setnick [@user] [nickname]", value = "Sets a user's nickname. If there is none provided, it will reset it",
+        inline = False)
+        em.add_field(name = f"{prefix}warn [@user] [reason]", value = "Warns a user", inline = False)
+        em.add_field(name = f"{prefix}warns [@user]", value = "Gets a list of a users warnings", inline = False)
 
         await ctx.send(embed = em)
 
