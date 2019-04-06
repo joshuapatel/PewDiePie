@@ -29,7 +29,7 @@ class Moderation(commands.Cog):
             await ctx.send(embed = em)
         except discord.Forbidden:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Forbidden", value = "Please check that the bot has permissions to ban a member")
+            em.add_field(name = "Forbidden", value = "Please check that the bot has permissions to ban this member.")
             await ctx.send(embed = em)
             return
 
@@ -56,7 +56,7 @@ class Moderation(commands.Cog):
             await ctx.send(embed = em)
         except discord.Forbidden:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Forbidden", value = "Please check that the bot has permissions to kick a member")
+            em.add_field(name = "Forbidden", value = "Please check that the bot has permissions to kick this member.")
             await ctx.send(embed = em)
             return
 
