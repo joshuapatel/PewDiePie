@@ -185,7 +185,7 @@ class Moderation(commands.Cog):
 
         for warning in warns:
             em = discord.Embed(color = discord.Color.red())
-            em.description = f"{user.name} has {len(warns)} warning(s)."
+            em.title = f"{user.name} has {len(warns)} warning(s)."
 
             isname = ctx.guild.get_member(warning["issuerid"])
 
