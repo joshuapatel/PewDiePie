@@ -74,7 +74,7 @@ class Moderation(commands.Cog):
     @commands.command(aliases = ["delete", "remove"])
     @commands.has_permissions(manage_messages = True)
     @commands.bot_has_permissions(manage_messages = True)
-    async def purge(self, ctx, amount: int = 5):
+    async def purge(self, ctx, amount: int):
         try:
             await ctx.channel.purge(limit = amount + 1)
         except discord.Forbidden:
