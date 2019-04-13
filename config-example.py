@@ -1,11 +1,9 @@
 """
-Rename this file to config.py. You will need PostgreSQL, git, discord.py rewrite, asyncpg, and jishaku.
+Rename this file to config.py. You will need PostgreSQL, discord.py rewrite, asyncpg, and jishaku.
 
 Download PostgreSQL: https://www.postgresql.org/download/
 
-Download git: https://git-scm.com/download/
-
-discord.py rewrite: `pip install -U git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]`
+discord.py rewrite: `pip install -U discord.py[voice]`
 
 asyncpg: `pip install -U asyncpg`
 
