@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
-import cogs.utils.paginator as paginator
+import utils.paginator as paginator
 
 
 class Paginator(paginator.EmbedInterface):
