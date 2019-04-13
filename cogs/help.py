@@ -135,7 +135,7 @@ class Help(commands.Cog):
         em.add_field(name = f"{prefix}setnick [@user] [nickname]", value = "Sets a user's nickname. If there is none provided, it will reset it",
         inline = False)
         em.add_field(name = f"{prefix}warn [@user] [reason]", value = "Warns a user", inline = False)
-        em.add_field(name = f"{prefix}warns [@user]", value = "Gets a list of a users warnings", inline = False)
+        em.add_field(name = f"{prefix}warns [@user]", value = "Gets a list of a users warnings. If none is provided, it'll show warnings in the server", inline = False)
 
         await ctx.send(embed = em)
 
