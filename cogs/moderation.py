@@ -139,15 +139,15 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases = ["warning"])
     @commands.has_permissions(kick_members = True)
-    async def warn(self, ctx, user: discord.Member, *, reason: str = None):
-        if reason == None:
-            em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Specify Reason", value = "You must include the reason.")
-            await ctx.send(embed = em)
-            return
+    async def warn(self, ctx, user: discord.Member, *, reason: str = "No reason provided."):
         if user.id == ctx.author.id:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Cannot Warn Yourself", value = "You cannot warn yourself.")
+            await ctx.send(embed = em)
+            return
+        if user.bot:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Cannot Warn Bots", value = "You cannot warn bot accounts.")
             await ctx.send(embed = em)
             return
 
@@ -171,13 +171,15 @@ class Moderation(commands.Cog):
     @commands.command(aliases = ["warnings"])
     async def warns(self, ctx, *, user: discord.Member = None):
         if user == None:
-            user = ctx.author
-
-        warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE guildid = $1", ctx.guild.id)
+            title = f"There are {len(warns)} warning(s) in this server."
+        else:
+            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+            title = f"{user.name} has {len(warns)} warning(s)."
 
         if warns == []:
             em = discord.Embed(color = discord.Color.red())
-            em.add_field(name = "No Warnings", value = f"{user.mention} has no warnings.")
+            em.add_field(name = "No Warnings", value = "No warnings have been found.")
             await ctx.send(embed = em)
             return
 
@@ -185,16 +187,26 @@ class Moderation(commands.Cog):
 
         for warning in warns:
             em = discord.Embed(color = discord.Color.red())
-            em.title = f"{user.name} has {len(warns)} warning(s)."
+            em.title = title
 
             isname = ctx.guild.get_member(warning["issuerid"])
 
-            if isname == None:
+            if user == None:
+                isname = ctx.guild.get_member(warning["userid"])
+                if isname == None:
+                    isname = "Unknown User"
+                else:
+                    isname = isname.name
+            elif isname == None:
                 isname = warning["issuername"]
             else:
                 isname = isname.name
 
-            em.add_field(name = f"Issued By: {isname}", value = warning["reason"])
+            if user:
+                em.add_field(name = f"Moderator: {isname}", value = warning["reason"])
+            else:
+                em.add_field(name = f"User: {isname}", value = warning["reason"])
+
             em.timestamp = warning["time"]
 
             pag.add_page(em)
