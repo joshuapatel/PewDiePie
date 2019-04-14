@@ -21,6 +21,12 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members = True)
     @commands.bot_has_permissions(ban_members = True)
     async def ban(self, ctx, user: discord.Member, *, reason: str = None):
+        if ctx.author.id == user.id:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Cannot Ban Yourself", value = "You cannot ban yourself.")
+            await ctx.send(embed = em)
+            return
+
         try:
             await user.ban(reason = reason)
 
@@ -48,6 +54,12 @@ class Moderation(commands.Cog):
     @commands.has_permissions(kick_members = True)
     @commands.bot_has_permissions(kick_members = True)
     async def kick(self, ctx, user: discord.Member, *, reason: str = None):
+        if ctx.author.id == user.id:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Cannot Kick Yourself", value = "You cannot kick yourself.")
+            await ctx.send(embed = em)
+            return
+
         try:
             await user.kick(reason = reason)
 
