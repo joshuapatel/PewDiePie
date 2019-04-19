@@ -110,14 +110,12 @@ class General(commands.Cog):
 
         if prefixes == None:
             prefix = ""
-            formatted = []
 
-            for x in self.bot.default_prefixes:
-                formatted.append(x.lower())
-            formatted = list(dict.fromkeys(formatted))
+            formatted = {p.lower() for p in self.bot.default_prefixes}
 
-            for x in formatted:
-                prefix += f"{x}, "
+            for pf in formatted:
+                prefix += pf + ", "
+
             prefix = prefix[:-2]
         else:
             prefix = prefixes
