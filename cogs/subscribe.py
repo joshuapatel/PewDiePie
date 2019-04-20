@@ -199,7 +199,7 @@ class Subscribe(commands.Cog):
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["subscribercount", "sc"])
-    async def subcount(self, ctx, _type = "True"):
+    async def subcount(self, ctx, _type: str = "True"):
         _type = _type != "False"
 
         if _type: await ctx.channel.trigger_typing()
