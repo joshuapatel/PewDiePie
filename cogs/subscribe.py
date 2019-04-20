@@ -90,7 +90,7 @@ class Subscribe(commands.Cog):
             while True:
                 try:
                     try:
-                        info = await self.subcount.callback(None, None, False) # pylint: disable=no-member
+                        info = await self.subcount.callback(None, None, "False") # pylint: disable=no-member
                     except KeyError:
                         cont = False
                         return
@@ -172,7 +172,7 @@ class Subscribe(commands.Cog):
             await ctx.send(embed = em)
             return
 
-        info = await self.subcount.callback(None, None, False) # pylint: disable=no-member
+        info = await self.subcount.callback(None, None, "False") # pylint: disable=no-member
         em = discord.Embed(color = discord.Color.blurple())
         em.add_field(name = "Leading Channel", value = info)
         em.timestamp = dt.utcnow()
@@ -199,7 +199,9 @@ class Subscribe(commands.Cog):
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["subscribercount", "sc"])
-    async def subcount(self, ctx, _type = True):
+    async def subcount(self, ctx, _type = "True"):
+        _type = _type != "False"
+
         if _type: await ctx.channel.trigger_typing()
 
         base_uri = "https://www.googleapis.com/youtube/v3/channels"
