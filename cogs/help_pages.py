@@ -11,7 +11,8 @@ class HelpPages(commands.Cog):
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
         em.set_author(name = "Main Commands")
 
-        em.add_field(name = f"{prefix}disstrack [leave/stop]", value = f"Plays Bitch Lasagna in a voice channel", inline = False)
+        em.add_field(name = f"{prefix}disstrack [leave/stop]", value = "Plays Bitch Lasagna in a voice channel", inline = False)
+        em.add_field(name = f"{prefix}congrats [leave/stop]", value = "Plays Congratulations in a voice channel", inline = False)
         em.add_field(name = f"{prefix}subcount", value = "Shows T-Series' and PewDiePie's subscriber count", inline = False)
         em.add_field(name = f"{prefix}subgap [stop/remove]", value = "Sends the subgap between PewDiePie and T-Series then updates it every 30 seconds", inline = False)
         em.add_field(name = f"{prefix}randomvid", value = "Returns a random PewDiePie or T-Series video", inline = False)
