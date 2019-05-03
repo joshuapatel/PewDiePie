@@ -61,6 +61,8 @@ Run `python pewdiepie.py`
 |----|-----------|
 |disstrack|Plays Bitch Lasagna in a voice channel|
 |disstrack stop (leave)|Disconnects from the voice channel|
+|congrats|Plays Congratulations in a voice channel|
+|congrats stop (leave)|Disconnects from the voice channel|
 |subcount|Shows T-Series' and PewDiePie's subscriber count|
 |subgap|Sends a message then automatically starts updating it every 30 seconds|
 |subgap stop (remove)|Stops the subgap message from updating in your server|
