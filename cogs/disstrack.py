@@ -47,5 +47,6 @@ class Disstrack(commands.Cog):
     async def disstrack_stop(self, ctx):
         await self.stop(ctx)
 
+
 def setup(bot):
     bot.add_cog(Disstrack(bot))
