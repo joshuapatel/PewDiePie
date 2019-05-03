@@ -17,13 +17,44 @@ Post your server invite in the [support server](https://discord.gg/we4DQ5u) cont
 
 ## How should I run the bot?
 
-I strongly recommend that you [invite the bot](https://discordbots.org/bot/500868806776979462/) and no effort will be extended to running an instance of the bot with the code provided in this repository.
+I strongly recommend that you [invite the bot](https://discordbots.org/bot/500868806776979462/). Nevertheless, here are the instructions.
 
-[![Discord Bots](https://discordbots.org/api/widget/500868806776979462.svg)](https://discordbots.org/bot/500868806776979462)
+### Instructions
 
-## What are the commands?
+1. **Install Python 3.6+**
 
-**I recommend that you invite the bot to your server to see the latest commands as these will most likely never be updated. Updated as of March 26, 2019.**
+I use Python 3.7 for production and testing purposes so results may vary.
+
+2. **Install dependencies**
+
+Run `pip install -U -r dep.txt`
+
+3. **Install PostgreSQL**
+
+The latest version of PostgreSQL is recommended.
+
+You will need...
+
++ A database named `tseries`
++ Username and password
+
+Note your username and password.
+
+4. **Install Redis**
+
+The latest version of Redis is recommended.
+
+Using port `6379` running on `localhost` is the default configuration. You can change the port number and address in the `pewdiepie.py` file.
+
+5. **Fill out credentials**
+
+Open up `config-example.py` and follow the instructions in the docstring.
+
+6. **Start the bot**
+
+Run `python pewdiepie.py`
+
+## Commands
 
 ### General Commands
 |Name|Description|
@@ -71,6 +102,17 @@ I strongly recommend that you [invite the bot](https://discordbots.org/bot/50086
 |snipe list (l)|List the previous 5 deleted messages in the server|
 |snipe bot (b)|Snipes the last deleted message sent by a bot in the current channel|
 
+### Moderation Commands
+|Name|Description|
+|----|-----------|
+|ban|Bans a member. Reason is optional|
+|kick|Kicks a member. Reason is optional|
+|purge|Purges / clears a specified amount of messages|
+|deafen|Deafens a user. They must be in a voice channel|
+|setnick|Sets a user's nickname. If none is provided, it will be reset|
+|warn|Warns a user|
+|warns|Retrieves warnings for the user specified|
+
 ### Other Commands
 |Name|Description|
 |----|-----------|
@@ -83,3 +125,5 @@ I strongly recommend that you [invite the bot](https://discordbots.org/bot/50086
 
 
 Do you have any more questions about the bot? Send a DM to **A Discord User#4063** or join the [support server](https://discord.gg/we4DQ5u).
+
+[![Discord Bots](https://discordbots.org/api/widget/500868806776979462.svg)](https://discordbots.org/bot/500868806776979462)
