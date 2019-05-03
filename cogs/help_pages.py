@@ -2,29 +2,10 @@ import discord
 from discord.ext import commands
 
 
-class Help(commands.Cog):
+class HelpPages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bot.remove_command("help")
 
-    @commands.group(invoke_without_command = True)
-    async def help(self, ctx):
-        appinfo = await self.bot.application_info()
-        em = discord.Embed(color = discord.Color.gold())
-        prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
-        em.set_author(name = f"Help Manual for {self.bot.user.name}")
-        em.set_thumbnail(url = appinfo.icon_url)
-
-        em.add_field(name = "Main", value = f"{prefix}help main", inline = False)
-        em.add_field(name = "Meta", value = f"{prefix}help meta", inline = False)
-        em.add_field(name = "Economy", value = f"{prefix}help economy", inline = False)
-        em.add_field(name = "Economy Shop", value = f"{prefix}help shop", inline = False)
-        em.add_field(name = "Snipe", value = f"{prefix}help snipe", inline = False)
-        em.add_field(name = "Moderation", value = f"{prefix}help moderation", inline = False)
-
-        await ctx.send(embed = em)
-
-    @help.command(aliases = ["general"])
     async def main(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -38,9 +19,8 @@ class Help(commands.Cog):
         em.add_field(name = f"{prefix}spoiler [message]", value = "Sends any message you provide as a spoiler in an annoying form", inline = False)
         em.add_field(name = f"{prefix}meme", value = "Sends a random meme from one of the best meme subreddits", inline = False)
 
-        await ctx.send(embed = em)
+        return em
 
-    @help.command(aliases = ["meta"])
     async def normal(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -55,9 +35,8 @@ class Help(commands.Cog):
         em.add_field(name = f"{prefix}prefix", value = f"Returns the current prefix that {self.bot.user.name} uses in your server", inline = False)
         em.add_field(name = f"{prefix}setprefix (sprefix) [prefix]", value = "Sets the bot prefix or resets it if there is no prefix defined", inline = False)
 
-        await ctx.send(embed = em)
+        return em
 
-    @help.command()
     async def economy(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -75,9 +54,8 @@ class Help(commands.Cog):
         """, inline = False)
         em.add_field(name = f"{prefix}statistics (stats)", value = "Statistics on Bro Coin usage", inline = False)
 
-        await ctx.send(embed = em)
+        return em
 
-    @help.command()
     async def shop(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -90,9 +68,8 @@ class Help(commands.Cog):
         em.add_field(name = f"{prefix}shop buy [role name]", value = "Buys an item from the shop", inline = False)
         em.set_footer(text = "Note: The bot must have the manage roles permission and be higher than the role in the shop to use the shop features")
 
-        await ctx.send(embed = em)
+        return em
 
-    @help.command()
     async def snipe(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -114,9 +91,8 @@ class Help(commands.Cog):
         """, inline = False)
         em.set_footer(text = "If you would like a snipe removed, please DM me with the message ID")
 
-        await ctx.send(embed = em)
+        return em
 
-    @help.command()
     async def moderation(self, ctx):
         em = discord.Embed(color = discord.Color.gold())
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
@@ -137,8 +113,8 @@ class Help(commands.Cog):
         em.add_field(name = f"{prefix}warn [@user] [reason]", value = "Warns a user", inline = False)
         em.add_field(name = f"{prefix}warns [@user]", value = "Gets a list of a users warnings. If none is provided, it'll show warnings in the server", inline = False)
 
-        await ctx.send(embed = em)
+        return em
 
 
 def setup(bot):
-    bot.add_cog(Help(bot))
+    bot.add_cog(HelpPages(bot))
