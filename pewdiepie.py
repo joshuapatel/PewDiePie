@@ -88,6 +88,11 @@ class PewDiePie(commands.AutoShardedBot):
             "Ts.", "tS.", "TS."
         ]
 
+        prefixes = await self.pool.fetch("SELECT * FROM prefixes")
+
+        for current_row in prefixes:
+            self.prefixes[current_row["guildid"]] = current_row["prefix"]
+
         for extension in extensions:
             try:
                 self.load_extension(extension)
@@ -96,7 +101,7 @@ class PewDiePie(commands.AutoShardedBot):
                 print(f"\n{error}")
 
     async def start(self):
-        await self.login(config.pubtoken) # pylint: disable=no-member
+        await self.login(config.privtoken) # pylint: disable=no-member
         try:
             await self.connect()
         except KeyboardInterrupt:
