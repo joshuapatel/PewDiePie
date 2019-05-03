@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import datetime
 from contextlib import redirect_stdout
 import textwrap
 import io
@@ -129,6 +130,15 @@ class Owner(commands.Cog):
                 await ctx.send(f"Updated cogs: {final_string}")
         else:
             await ctx.send("No cogs were updated")
+
+    @commands.command()
+    @commands.is_owner()
+    async def redis(self, ctx, *args):
+        try:
+            cmd = await self.bot.redis.execute(*args)
+            await ctx.send(getattr(cmd, "decode", cmd.__str__)())
+        except Exception as e:
+            await ctx.send(e)
 
     @commands.command(name = "eval")
     @commands.is_owner()
