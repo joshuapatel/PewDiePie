@@ -68,14 +68,12 @@ class General(commands.Cog):
         em.add_field(name = "T-Series", value = "https://www.youtube.com/user/tseries")
         await ctx.send(embed = em)
 
-    @commands.command(aliases = ["info", "bot", "information", "botinformation", "support"])
-    async def botinfo(self, ctx):
+    @commands.command(aliases = ["botinfo", "about", "support"])
+    async def info(self, ctx):
         botlat = f"{self.bot.latency * 1000:.3f}"
-        owner = await self.bot.application_info()
-        owner = owner.owner
 
         em = discord.Embed(title = f"{self.bot.user.name} Information", color = discord.Color.green())
-        em.add_field(name = "Bot Creator", value = owner)
+        em.add_field(name = "Bot Creator", value = self.bot.get_user(self.bot.owner_id))
         em.add_field(name = "Bot Library", value = "discord.py rewrite")
         em.add_field(name = "Support Server", value = "https://discord.gg/we4DQ5u")
         em.add_field(name = "Bot Latency", value = f"{botlat} ms")
