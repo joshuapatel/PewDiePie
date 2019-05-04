@@ -27,7 +27,7 @@ class HelpPages(commands.Cog):
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
         em.set_author(name = "Meta Commands")
 
-        em.add_field(name = f"{prefix}botinfo", value = f"Information on {self.bot.user.name}", inline = False)
+        em.add_field(name = f"{prefix}info (about)", value = "Bot information", inline = False)
         em.add_field(name = f"{prefix}invite", value = "Sends the bot invite", inline = False)
         em.add_field(name = f"{prefix}feedback [message]", value = """
         This command will send the developer feedback on this bot. Feel free to send suggestions or issues
