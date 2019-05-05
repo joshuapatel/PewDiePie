@@ -27,7 +27,7 @@ I use Python 3.7 for production and testing purposes so results may vary.
 
 2. **Install dependencies**
 
-Run `pip install -U -r dep.txt`
+Run `pip install -U -r requirements.txt`
 
 3. **Install PostgreSQL**
 
