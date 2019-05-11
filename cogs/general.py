@@ -74,6 +74,8 @@ class General(commands.Cog):
 
     @commands.command(aliases = ["botinfo", "about", "support"])
     async def info(self, ctx):
+        botlat = str(round(self.bot.latency * 1000, 3))
+
         em = discord.Embed(title = f"{self.bot.user.name} Information", color = discord.Color.green())
         em.add_field(name = "Bot Creator", value = self.bot.get_user(self.bot.owner_id))
         em.add_field(name = "Bot Library", value = "discord.py rewrite")
