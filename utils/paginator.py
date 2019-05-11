@@ -16,8 +16,8 @@ EMOJI_DEFAULT = EmojiSettings(
 
 
 class EmbedPaginator(commands.Paginator):
-    def __init__(self, max_size=2048):
-        super().__init__(prefix=None, suffix=None, max_size=max_size)
+    def __init__(self, prefix=None, suffix=None, max_size=2048):
+        super().__init__(prefix=prefix, suffix=suffix, max_size=max_size)
 
     def add_page(self, embed: discord.Embed):
         self._pages.append(embed)
