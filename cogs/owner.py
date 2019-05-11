@@ -1,13 +1,19 @@
+# -> Discord
 import discord
 from discord.ext import commands
+# -> Miscellaneous
 import datetime
+import re
+import inspect
+import psutil
+# -> Eval
 from contextlib import redirect_stdout
 import textwrap
 import io
 import traceback
+# -> Loop
 import asyncio
-import re
-import inspect
+# -> Configuration
 import sys
 sys.path.append("../")
 import config # Note: Only importing config module since it's easier to use in eval
