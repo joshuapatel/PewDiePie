@@ -13,13 +13,16 @@ sys.path.append("../")
 import config # Note: Only importing config module since it's easier to use in eval
 
 
+SUPPORT_GUILD = 499357399690379264
+SUPPOR_GUILD_AUTH_ROLE = 531176653184040961
+
 class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     async def cmdauthcheck(ctx): # pylint: disable=E0213
-        guild = ctx.bot.get_guild(499357399690379264)
-        role = guild.get_role(531176653184040961)
+        guild = ctx.bot.get_guild(SUPPORT_GUILD)
+        role = guild.get_role(SUPPOR_GUILD_AUTH_ROLE)
         user = guild.get_member(ctx.author.id) # pylint: disable=E1101
         try:
             if role in user.roles:
