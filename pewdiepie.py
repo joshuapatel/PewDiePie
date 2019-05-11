@@ -27,7 +27,7 @@ async def custom_prefix(bot, message):
         rnd = random.randint(12**2, 12**4)
         return str(rnd)
 
-    if prefix == None:
+    if prefix is None:
         return commands.when_mentioned_or(*bot.default_prefixes)(bot, message)
     else:
         return commands.when_mentioned_or(prefix)(bot, message)
@@ -48,9 +48,9 @@ class PewDiePie(commands.AutoShardedBot):
             reconnect = True,
             owner_id = 498678645716418578
         )
-        self.prefixes = {}
         self.pool = None
         self.redis = None
+        self.prefixes = {}
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):
@@ -74,9 +74,11 @@ class PewDiePie(commands.AutoShardedBot):
         try:
             self.pool = await asyncpg.create_pool(**pool_creds)
             self.redis = await aioredis.create_redis_pool(**redis_creds)
-        except Exception as e:
+            await self.redis.flushdb(async_op = True)
+        except Exception as error:
             print("There was a problem")
-            print("\n" + str(e))
+            print("\n" + str(error))
+            await self.stop()
 
         with open("schema.sql", "r") as schema:
             await self.pool.execute(schema.read())
@@ -88,17 +90,20 @@ class PewDiePie(commands.AutoShardedBot):
             "Ts.", "tS.", "TS."
         ]
 
-        prefixes = await self.pool.fetch("SELECT * FROM prefixes")
+        await self.redis.hmset_dict("prefixes", dict(await self.pool.fetch("SELECT * FROM prefixes")))
 
-        for current_row in prefixes:
-            self.prefixes[current_row["guildid"]] = current_row["prefix"]
+        async for guild, prefix in self.redis.ihscan("prefixes"):
+            self.prefixes[int(guild)] = prefix.decode()
 
+        self.prepare_extensions()
+
+    def prepare_extensions(self):
         for extension in extensions:
             try:
                 self.load_extension(extension)
             except Exception as error:
                 print(f"There was a problem loading in the {extension} extension")
-                print(f"\n{error}")
+                print("\n" + str(error))
 
     async def start(self):
         await self.login(config.pubtoken) # pylint: disable=no-member
@@ -108,6 +113,8 @@ class PewDiePie(commands.AutoShardedBot):
             await self.stop()
 
     async def stop(self):
+        self.redis.close()
+        await self.redis.wait_closed()
         await self.pool.close()
         await super().logout()
 
