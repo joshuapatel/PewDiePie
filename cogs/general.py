@@ -1,10 +1,14 @@
+# -> Discord
 import discord
 from discord.ext import commands
+# -> Loop
 import asyncio
-import random
 import aiohttp
+# -> Miscellaneous
+import random
 import datetime
 import textwrap
+# -> Configuration
 import sys
 sys.path.append("../")
 import config
@@ -70,8 +74,6 @@ class General(commands.Cog):
 
     @commands.command(aliases = ["botinfo", "about", "support"])
     async def info(self, ctx):
-        botlat = f"{self.bot.latency * 1000:.3f}"
-
         em = discord.Embed(title = f"{self.bot.user.name} Information", color = discord.Color.green())
         em.add_field(name = "Bot Creator", value = self.bot.get_user(self.bot.owner_id))
         em.add_field(name = "Bot Library", value = "discord.py rewrite")
@@ -102,11 +104,11 @@ class General(commands.Cog):
         """))
         await ctx.send(embed = em)
 
-    @commands.command(aliases = ["currentprefix", "botprefix", "serverprefix", "guildprefix"])
+    @commands.command(aliases = ["prefixes"])
     async def prefix(self, ctx):
-        prefixes = await self.bot.pool.fetchval("SELECT prefix FROM prefixes WHERE guildid = $1", ctx.guild.id)
+        prefixes = self.bot.prefixes.get(ctx.guild.id)
 
-        if prefixes == None:
+        if prefixes is None:
             prefix = ""
 
             formatted = {p.lower() for p in self.bot.default_prefixes}
@@ -125,7 +127,7 @@ class General(commands.Cog):
     @commands.command(aliases = ["sprefix"])
     @commands.has_permissions(manage_messages = True)
     async def setprefix(self, ctx, *, prefix: str = None):
-        if prefix != None:
+        if prefix is not None:
             if len(prefix) > 30:
                 em = discord.Embed(color = discord.Color.dark_teal())
                 em.add_field(name = "Prefix Character Limit Exceeded", value = "Prefixes can only be 30 characters or less")
@@ -134,8 +136,8 @@ class General(commands.Cog):
 
         gchck = await self.bot.pool.fetchrow("SELECT * FROM prefixes WHERE guildid = $1", ctx.guild.id)
 
-        if gchck == None:
-            if prefix != None:
+        if gchck is None:
+            if prefix is not None:
                 await self.bot.pool.execute("INSERT INTO prefixes VALUES ($1, $2)", ctx.guild.id, prefix)
 
                 em = discord.Embed(color = discord.Color.red())
@@ -147,7 +149,7 @@ class General(commands.Cog):
                 await ctx.send(embed = em)
                 return
         else:
-            if prefix == None:
+            if prefix is None:
                 await self.bot.pool.execute("DELETE FROM prefixes WHERE guildid = $1", ctx.guild.id)
 
                 em = discord.Embed(color = discord.Color.red())
@@ -160,10 +162,12 @@ class General(commands.Cog):
                 em.add_field(name = "Set Prefix", value = f"{self.bot.user.mention}'s prefix has been set to `{prefix}`")
                 await ctx.send(embed = em)
 
-        if prefix != None:
+        if prefix is not None:
             self.bot.prefixes[ctx.guild.id] = prefix
+            await self.bot.redis.hset("prefixes", ctx.guild.id, prefix)
         else:
             self.bot.prefixes.pop(ctx.guild.id)
+            await self.bot.redis.hdel("prefixes", ctx.guild.id)
 
     @commands.command(aliases = ["memes"])
     async def meme(self, ctx):
