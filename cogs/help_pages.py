@@ -15,6 +15,7 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}congrats [leave/stop]", value = "Plays Congratulations in a voice channel", inline = False)
         em.add_field(name = f"{prefix}subcount", value = "Shows T-Series' and PewDiePie's subscriber count", inline = False)
         em.add_field(name = f"{prefix}subgap [stop/remove]", value = "Sends the subgap between PewDiePie and T-Series then updates it every 30 seconds", inline = False)
+        em.add_field(name = f"{prefix}setup", value = "Changes the channels being used in the subgap and subcount commands", inline = False)
         em.add_field(name = f"{prefix}randomvid", value = "Returns a random PewDiePie or T-Series video", inline = False)
         em.add_field(name = f"{prefix}youtube (yt)", value = "Sends you the link to PewDiePie's and T-Series' YouTube channel", inline = False)
         em.add_field(name = f"{prefix}spoiler [message]", value = "Sends any message you provide as a spoiler in an annoying form", inline = False)
