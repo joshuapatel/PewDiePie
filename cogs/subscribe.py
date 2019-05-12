@@ -114,7 +114,6 @@ class Subscribe(commands.Cog):
             return
 
         guild_check = await self.bot.pool.fetchrow("SELECT * FROM sub_setup WHERE guildid = $1", ctx.guild.id)
-
         if guild_check is None:
             await self.bot.pool.execute("INSERT INTO sub_setup VALUES ($1, $2, $3)", ctx.guild.id, first_ch, second_ch)
         else:
