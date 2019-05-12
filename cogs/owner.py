@@ -19,79 +19,16 @@ sys.path.append("../")
 import config # Note: Only importing config module since it's easier to use in eval
 
 
-SUPPORT_GUILD = 499357399690379264
-SUPPORT_GUILD_AUTH_ROLE = 531176653184040961
-
 class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def cmdauthcheck(ctx): # pylint: disable=E0213
-        guild = ctx.bot.get_guild(SUPPORT_GUILD)
-        role = guild.get_role(SUPPORT_GUILD_AUTH_ROLE)
-        user = guild.get_member(ctx.author.id) # pylint: disable=E1101
-        try:
-            if role in user.roles:
-                return True
-            else:
-                return False
-        except AttributeError:
-            return False
+    async def cog_check(self, ctx):
+        if not await self.bot.is_owner(ctx.author):
+            raise commands.NotOwner()
+        return True
 
     @commands.command()
-    @commands.check(cmdauthcheck)
-    async def authorize(self, ctx, g: int = None):
-        if g != None:
-            guild = self.bot.get_guild(g)
-            if guild == None:
-                em = discord.Embed(color = discord.Color.dark_teal())
-                em.add_field(name = "Guild Not Found", value = f"The guild (`{g}`) couldn't be found.")
-                await ctx.send(embed = em)
-                return
-        else:
-            guild = ctx.guild
-
-        gchck = await self.bot.pool.fetchrow("SELECT * FROM authorized WHERE guildid = $1", guild.id)
-        if gchck != None:
-            emb = discord.Embed(color = discord.Color.dark_teal())
-            emb.add_field(name = "Already Authorized", value = f"`{guild.name}` is already authorized")
-            await ctx.send(embed = emb)
-            return
-
-        await self.bot.pool.execute("INSERT INTO authorized VALUES ($1)", guild.id)
-
-        em = discord.Embed(color = discord.Color.dark_purple())
-        em.add_field(name = "Authorized", value = f"`{guild.name}` has been authorized")
-        await ctx.send(embed = em)
-
-    @commands.command()
-    @commands.check(cmdauthcheck)
-    async def deauthorize(self, ctx, g: int = None):
-        if g != None:
-            guild = self.bot.get_guild(g)
-            if guild == None:
-                em = discord.Embed(color = discord.Color.dark_teal())
-                em.add_field(name = "Guild Not Found", value = f"The guild (`{g}`) couldn't be found.")
-                await ctx.send(embed = em)
-                return
-        else:
-            guild = ctx.guild
-
-        gchck = await self.bot.pool.fetchrow("SELECT * FROM authorized WHERE guildid = $1", guild.id)
-        if gchck == None:
-            emb = discord.Embed(color = discord.Color.dark_teal())
-            emb.add_field(name = "Never Authorized", value = f"`{guild.name}` was never authorized")
-            await ctx.send(embed = emb)
-            return
-
-        await self.bot.pool.execute("DELETE FROM authorized WHERE guildid = $1", guild.id)
-
-        em = discord.Embed(color = discord.Color.dark_purple())
-        em.add_field(name = "Deauthorized", value = f"`{guild.name}` has been deauthorized")
-        await ctx.send(embed = em)
-
-    @commands.command()
-    @commands.is_owner()
     async def update(self, ctx):
         pro = await asyncio.create_subprocess_exec(
             "git", "pull",
@@ -141,7 +78,6 @@ class Owner(commands.Cog):
             await ctx.send("No cogs were updated")
 
     @commands.command()
-    @commands.is_owner()
     async def redis(self, ctx, *args):
         try:
             cmd = await self.bot.redis.execute(*args)
@@ -150,7 +86,6 @@ class Owner(commands.Cog):
             await ctx.send(e)
 
     @commands.command(name = "eval")
-    @commands.is_owner()
     async def ev(self, ctx, *, code: str):
         """From R. Danny. I did not make this command"""
         env = {
