@@ -16,6 +16,7 @@ import config
 class Subscribe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.sg = {}
         self.subgap_task.start()
 
     def cog_unload(self):
@@ -27,6 +28,8 @@ class Subscribe(commands.Cog):
 
         for msg, ch, gd in guilds:
             await self.subgcheck(gd, ch, msg)
+
+        self.sg.clear()
 
     @subgap_task.before_loop
     async def before_subgap_task(self):
@@ -40,13 +43,27 @@ class Subscribe(commands.Cog):
             return
 
         try:
-            msg = await check.fetch_message(message)
+            await check.fetch_message(message)
         except (discord.NotFound, discord.Forbidden):
             await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
             return
 
-        ctx = await self.bot.get_context(msg)
-        sub_msg = await ctx.invoke(self.bot.get_command("subcount"), _type = "False")
+        guild_sub = await self.get_guild_sub(guild)
+
+        if guild_sub[0] in self.sg:
+            sub_msg = self.sg[guild_sub[0]][2]
+        else:
+            info = await self.get_channel_info(*guild_sub)
+            self.sg[guild_sub[0]] = info[0]
+            sub_msg = info[0][2]
+
+        if guild_sub[1] in self.sg:
+            sub_msg = self.sg[guild_sub[1]][2]
+        else:
+            info = await self.get_channel_info(*guild_sub)
+            self.sg[guild_sub[1]] = info[1]
+            sub_msg = info[1][2]
+
         await self.subgedit(channel, message, msg = sub_msg)
 
     async def subgedit(self, channel, message, msg = None, embed = None):
@@ -60,6 +77,40 @@ class Subscribe(commands.Cog):
         channel = self.bot.get_channel(channel)
         message = await channel.fetch_message(message)
         await message.edit(embed = em or embed)
+
+    async def get_channel_info(self, first_ch, second_ch):
+        base_uri = "https://www.googleapis.com/youtube/v3/channels"
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={first_ch}&key={config.ytdapi}") as fh:
+                first_ch = await fh.json()
+            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={second_ch}&key={config.ytdapi}") as sh:
+                second_ch = await sh.json()
+
+        first_count = int(first_ch["items"][0]["statistics"]["subscriberCount"])
+        second_count = int(second_ch["items"][0]["statistics"]["subscriberCount"])
+
+        first_name = first_ch["items"][0]["snippet"]["title"]
+        second_name = second_ch["items"][0]["snippet"]["title"]
+
+        if first_count >= second_count:
+            sg = f"{first_name} is leading with {first_count - second_count:,d} more subscribers than {second_name}"
+        else:
+            sg = f"{second_name} is leading with {second_count - first_count:,d} more subscribers than {first_name}"
+
+        return ((first_name, first_count, sg), (second_name, second_count, sg))
+
+    async def get_guild_sub(self, guild):
+        youtuber = await self.bot.pool.fetchrow("SELECT first_ch, second_ch FROM sub_setup WHERE guildid = $1", guild)
+        if youtuber is None:
+            first_ch = "UC-lHJZR3Gqxm24_Vd_AJ5Yw"
+            second_ch = "UCq-Fj5jknLsUf-MWSy4_brA"
+        else:
+            first_ch, second_ch = youtuber
+
+        return (first_ch, second_ch)
+
+    # ====Commands====
 
     @commands.command()
     @commands.has_permissions(manage_guild = True)
@@ -134,9 +185,11 @@ class Subscribe(commands.Cog):
             await ctx.send(embed = em)
             return
 
-        info = await ctx.invoke(self.bot.get_command("subcount"), _type = "False")
+        guild_sub = await self.get_guild_sub(ctx.guild.id)
+        info = await self.get_channel_info(*guild_sub)
+
         em = discord.Embed(color = discord.Color.blurple())
-        em.add_field(name = "Leading Channel", value = info)
+        em.add_field(name = "Leading Channel", value = info[0][2])
         em.timestamp = datetime.datetime.utcnow()
         stmsg = await ctx.send(embed = em)
 
@@ -146,7 +199,6 @@ class Subscribe(commands.Cog):
     @commands.has_permissions(manage_guild = True)
     async def stop(self, ctx):
         c = await self.bot.pool.fetchrow("SELECT * FROM subgap WHERE guildid = $1", ctx.guild.id)
-
         if c is None:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Subscriber Gap Not Running", value = "The subgap command is not currently being used in your server.")
@@ -160,43 +212,14 @@ class Subscribe(commands.Cog):
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["subscribercount", "sc"])
-    async def subcount(self, ctx, _type: str = "True"):
-        _type = _type != "False"
-
-        if _type: await ctx.channel.trigger_typing()
-
-        base_uri = "https://www.googleapis.com/youtube/v3/channels"
-
-        youtuber = await self.bot.pool.fetchrow("SELECT first_ch, second_ch FROM sub_setup WHERE guildid = $1", ctx.guild.id)
-        if youtuber is None:
-            first_ch = "UC-lHJZR3Gqxm24_Vd_AJ5Yw"
-            second_ch = "UCq-Fj5jknLsUf-MWSy4_brA"
-        else:
-            first_ch, second_ch = youtuber
-
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={first_ch}&key={config.ytdapi}") as fh:
-                first_ch = await fh.json()
-            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={second_ch}&key={config.ytdapi}") as sh:
-                second_ch = await sh.json()
-
-        first_count = int(first_ch["items"][0]["statistics"]["subscriberCount"])
-        second_count = int(second_ch["items"][0]["statistics"]["subscriberCount"])
-
-        first_name = first_ch["items"][0]["snippet"]["title"]
-        second_name = second_ch["items"][0]["snippet"]["title"]
-
-        if first_count >= second_count:
-            sg = f"{first_name} is leading with {first_count - second_count:,d} more subscribers than {second_name}"
-        else:
-            sg = f"{second_name} is leading with {second_count - first_count:,d} more subscribers than {first_name}"
-
-        if not _type: return sg
+    async def subcount(self, ctx):
+        guild_sub = await self.get_guild_sub(ctx.guild.id)
+        info = await self.get_channel_info(*guild_sub)
 
         em = discord.Embed(color = discord.Color.red())
-        em.add_field(name = first_name, value = f"{first_count:,d}")
-        em.add_field(name = second_name, value = f"{second_count:,d}")
-        em.add_field(name = "Leading Channel", value = sg, inline = False)
+        em.add_field(name = info[0][0], value = f"{info[0][1]:,d}")
+        em.add_field(name = info[1][0], value = f"{info[1][1]:,d}")
+        em.add_field(name = "Leading Channel", value = info[0][2], inline = False)
         await ctx.send(embed = em)
 
 
