@@ -17,17 +17,17 @@ class Subscribe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.sg = {}
-        self.subgap_task.start()
+        self.subgap_task.start() # pylint: disable=no-member
 
     def cog_unload(self):
-        self.subgap_task.cancel()
+        self.subgap_task.cancel() # pylint: disable=no-member
 
     @tasks.loop(seconds = 15)
     async def subgap_task(self):
         guilds = await self.bot.pool.fetch("SELECT * FROM subgap")
 
         for msg, ch, gd in guilds:
-            await self.subgcheck(gd, ch, msg)
+            await self.subgap_check(gd, ch, msg)
 
         self.sg.clear()
 
@@ -35,7 +35,7 @@ class Subscribe(commands.Cog):
     async def before_subgap_task(self):
         await self.bot.wait_until_ready()
 
-    async def subgcheck(self, guild, channel, message):
+    async def subgap_check(self, guild, channel, message):
         check = self.bot.get_channel(channel)
 
         if not check:
@@ -64,9 +64,9 @@ class Subscribe(commands.Cog):
             self.sg[guild_sub[1]] = info[1]
             sub_msg = info[1][2]
 
-        await self.subgedit(channel, message, msg = sub_msg)
+        await self.subgap_edit(channel, message, msg = sub_msg)
 
-    async def subgedit(self, channel, message, msg = None, embed = None):
+    async def subgap_edit(self, channel, message, msg = None, embed = None):
         if msg:
             em = discord.Embed(color = discord.Color.blurple())
             em.add_field(name = "Leading Channel", value = msg)
