@@ -97,7 +97,7 @@ class Subscribe(commands.Cog):
             await ctx.send(embed = em)
             return
 
-        await ctx.send("Please enter the second YouTube's channel name.")
+        await ctx.send("Please enter the second YouTuber's channel name.")
         try:
             second_ch = await self.bot.wait_for("message", check = check, timeout = 30)
         except asyncio.TimeoutError:
