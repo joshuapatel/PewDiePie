@@ -84,7 +84,6 @@ class Subscribe(commands.Cog):
         try:
             first_ch = await self.bot.wait_for("message", check = check, timeout = 30)
         except asyncio.TimeoutError:
-            await ctx.send("Timed out")
             return
 
         first_search = await search(first_ch.content)
