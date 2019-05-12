@@ -1,9 +1,13 @@
+# -> Discord
 import discord
 from discord.ext import commands
+from discord.ext import tasks
+# -> Loop
 import aiohttp
 import asyncio
-import textwrap
-from datetime import datetime as dt
+# -> Miscellaneous
+import datetime
+# -> Configuration
 import sys
 sys.path.append("../")
 import config
@@ -12,159 +16,118 @@ import config
 class Subscribe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.subgap_task.start()
 
-    async def subgcache(self):
-        self.bot.subgap["guildid"] = {}
-        self.bot.subgap["rmusr"] = {"time": [], "delete": False, "t_time": 0}
+    def cog_unload(self):
+        self.subgap_task.cancel()
 
-        information = await self.bot.pool.fetch("SELECT * FROM subgap")
+    @tasks.loop(seconds = 15)
+    async def subgap_task(self):
+        guilds = await self.bot.pool.fetch("SELECT * FROM subgap")
+        for msg, ch, gd in guilds:
+            await self.subgcheck(gd, ch, msg)
 
-        for info in information:
-            self.bot.subgap["guildid"][info["guildid"]] = {}
-            guild = self.bot.subgap["guildid"][info["guildid"]]
-            guild["channelid"] = info["channelid"]
-            guild["guildid"] = info["guildid"]
-            guild["msgid"] = info["msgid"]
-
-        for task in self.bot.tasks:
-            if task.startswith("subgap"):
-                self.bot.tasks[task].cancel()
-
-        tasks = {
-            "subgap": self.bot.loop.create_task(self.subgtask()),
-            "subgap_ovpt": self.bot.loop.create_task(self.subgovpt()),
-            "subgap_check": self.bot.loop.create_task(self.subgupcheck())
-        }
-
-        self.bot.tasks.update(tasks)
-
-    async def subgupcache(self, channel: int, guild: int, message: int):
-        gdict = self.bot.subgap["guildid"][guild] = {}
-        gdict["channelid"] = channel
-        gdict["guildid"] = guild
-        gdict["msgid"] = message
-
-    async def subgremove(self, guild: int):
-        rmusr = self.bot.subgap["rmusr"]
-
-        if rmusr["delete"]:
-            rmusr["t_time"] += 1
-            return True
-
-        if len(rmusr["time"]) > 1:
-            if rmusr["time"][-2:][1] - rmusr["time"][-2:][0] <= 3:
-                rmusr["delete"] = True
-                rmusr["time"].clear()
-                return True
-
-        if "keep_alive" in self.bot.subgap["guildid"][guild]:
-            return False
-
-        await self.bot.pool.execute("INSERT INTO subgapbackup SELECT * FROM subgap WHERE guildid = $1", guild)
-        await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
-        self.bot.subgap["guildid"].pop(guild)
-        rmusr["time"].append(round(dt.timestamp(dt.utcnow())))
-
-        return True
-
-    async def subgovpt(self):
-        while not self.bot.is_closed():
-            if self.bot.subgap["rmusr"]["delete"]:
-                if self.bot.subgap["rmusr"]["t_time"] >= 5:
-                    self.bot.tasks["subgap"].cancel()
-                    self.bot.tasks["subgap_check"].cancel()
-                else:
-                    await asyncio.sleep(5)
-                    if self.bot.subgap["rmusr"]["t_time"] <= 5:
-                        self.bot.subgap["rmusr"]["delete"] = False
-                    else:
-                        self.bot.tasks["subgap"].cancel()
-                        self.bot.tasks["subgap_check"].cancel()
-
-            await asyncio.sleep(15)
-
-    async def subgtask(self):
-        await self.bot.wait_until_ready()
-        cont = True
-        while cont:
-            while True:
-                try:
-                    try:
-                        info = await self.subcount.callback(None, None, "False") # pylint: disable=no-member
-                    except KeyError:
-                        cont = False
-                        return
-                    for sub in self.bot.subgap["guildid"]:
-                        guild = self.bot.subgap["guildid"][sub]
-                        await self.subgcheck(guild["channelid"], sub, guild["msgid"], info)
-                    break
-                except RuntimeError:
-                    await asyncio.sleep(1)
-                    continue
-
-            await asyncio.sleep(30)
-
-    async def subgupcheck(self):
+    @subgap_task.before_loop
+    async def before_subgap_task(self):
         await self.bot.wait_until_ready()
 
-        while not self.bot.is_closed():
-            if "subgap" not in self.bot.tasks:
-                continue
-            if self.bot.tasks["subgap"].done():
-                await self.subgcache()
+    async def subgcheck(self, guild, channel, message):
+        check = self.bot.get_channel(channel)
 
-            await asyncio.sleep(15)
-
-    async def subgcheck(self, channel: int, guild: int, message: int, submsg: str):
-        g = self.bot.get_guild(guild)
-
-        if g == None:
-            if await self.subgremove(guild):
-                return
-
-        channel = g.get_channel(channel)
-
-        if channel == None:
-            if await self.subgremove(g.id):
-                return
-
-        try:
-            await channel.fetch_message(message)
-        except (discord.NotFound, discord.Forbidden):
-            if await self.subgremove(g.id):
-                return
-        except discord.ConnectionClosed:
-            self.bot.tasks["subgap"].cancel()
-            # don't kill subgcheck() because it'll restart and hopefully
-            # discord will be back on again
+        if not check:
+            await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
             return
 
-        await self.subgedit(channel.id, g.id, message, submsg)
+        try:
+            msg = await check.fetch_message(message)
+        except (discord.NotFound, discord.Forbidden):
+            await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
+            return
 
-    async def subgedit(self, channel: int, guild: int, message: int, msg: str):
-        em = discord.Embed(color = discord.Color.blurple())
-        em.add_field(name = "Leading Channel", value = msg)
-        em.timestamp = dt.utcnow()
+        ctx = await self.bot.get_context(msg)
+        sub_msg = await ctx.invoke(self.bot.get_command("subcount"), _type = "False")
+        await self.subgedit(channel, message, msg = sub_msg)
 
-        guild = self.bot.get_guild(guild)
-        channel = guild.get_channel(channel)
+    async def subgedit(self, channel, message, msg = None, embed = None):
+        if msg:
+            em = discord.Embed(color = discord.Color.blurple())
+            em.add_field(name = "Leading Channel", value = msg)
+            em.timestamp = datetime.datetime.utcnow()
+        else:
+            em = None
+
+        channel = self.bot.get_channel(channel)
         message = await channel.fetch_message(message)
-        await message.edit(embed = em)
+        await message.edit(embed = em or embed)
+
+    @commands.command()
+    @commands.has_permissions(manage_guild = True)
+    async def setup(self, ctx):
+        base_uri = "https://www.googleapis.com/youtube/v3/search"
+
+        def check(message):
+            if message.channel.id != ctx.channel.id:
+                return False
+            if message.author.id != ctx.author.id:
+                return False
+
+            return True
+
+        async def search(ch_name):
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key={config.ytdapi}") as ch:
+                    channel = await ch.json()
+
+            return channel
+
+        await ctx.send("Please enter the first YouTuber's channel name.")
+        try:
+            first_ch = await self.bot.wait_for("message", check = check, timeout = 30)
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out")
+            return
+
+        first_search = await search(first_ch.content)
+
+        if first_search["pageInfo"]["totalResults"] >= 1:
+            first_ch = first_search["items"][0]["id"]["channelId"]
+        else:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "YouTuber Not Found", value = "Couldn't find a YouTuber with that name.")
+            await ctx.send(embed = em)
+            return
+
+        await ctx.send("Please enter the second YouTube's channel name.")
+        try:
+            second_ch = await self.bot.wait_for("message", check = check, timeout = 30)
+        except asyncio.TimeoutError:
+            return
+
+        second_search = await search(second_ch.content)
+
+        if second_search["pageInfo"]["totalResults"] >= 1:
+            second_ch = second_search["items"][0]["id"]["channelId"]
+        else:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "YouTuber Not Found", value = "Couldn't find a YouTuber with that name.")
+            await ctx.send(embed = em)
+            return
+
+        guild_check = await self.bot.pool.fetchrow("SELECT * FROM sub_setup WHERE guildid = $1", ctx.guild.id)
+
+        if guild_check is None:
+            await self.bot.pool.execute("INSERT INTO sub_setup VALUES ($1, $2, $3)", ctx.guild.id, first_ch, second_ch)
+        else:
+            await self.bot.pool.execute("UPDATE sub_setup SET first_ch = $1, second_ch = $2 WHERE guildid = $3",
+                first_ch, second_ch, ctx.guild.id)
+
+        await ctx.send("Completed setup!")
 
     @commands.group(invoke_without_command = True)
     @commands.has_permissions(manage_guild = True)
     async def subgap(self, ctx):
-        ch = await self.bot.pool.fetchrow("SELECT * FROM authorized WHERE guildid = $1", ctx.guild.id)
-        if ch == None:
-            em = discord.Embed(color = discord.Color.dark_teal())
-            g = "https://github.com/joshuapatel/PewDiePie/#how-do-i-get-authorized-for-the-subgap-command"
-            em.add_field(name = "Not Authorized",
-            value = f"Your server is not authorized to use this command. Please read the [guidelines]({g}) for getting authorized.")
-            await ctx.send(embed = em)
-            return
-
         chtwo = await self.bot.pool.fetchrow("SELECT * FROM subgap WHERE guildid = $1", ctx.guild.id)
-        if chtwo != None:
+        if chtwo is not None:
             prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Subscriber Gap in Use",
@@ -172,27 +135,26 @@ class Subscribe(commands.Cog):
             await ctx.send(embed = em)
             return
 
-        info = await self.subcount.callback(None, None, "False") # pylint: disable=no-member
+        info = await ctx.invoke(self.bot.get_command("subcount"), _type = "False")
         em = discord.Embed(color = discord.Color.blurple())
         em.add_field(name = "Leading Channel", value = info)
-        em.timestamp = dt.utcnow()
+        em.timestamp = datetime.datetime.utcnow()
         stmsg = await ctx.send(embed = em)
 
         await self.bot.pool.execute("INSERT INTO subgap VALUES ($1, $2, $3)", stmsg.id, ctx.channel.id, ctx.guild.id)
-        await self.subgupcache(ctx.channel.id, ctx.guild.id, stmsg.id)
 
     @subgap.command(aliases = ["remove", "delete"])
     @commands.has_permissions(manage_guild = True)
     async def stop(self, ctx):
         c = await self.bot.pool.fetchrow("SELECT * FROM subgap WHERE guildid = $1", ctx.guild.id)
 
-        if c == None:
+        if c is None:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Subscriber Gap Not Running", value = "The subgap command is not currently being used in your server.")
             await ctx.send(embed = em)
             return
 
-        if not await self.subgremove(ctx.guild.id): return
+        await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", ctx.guild.id)
 
         em = discord.Embed(color = discord.Color.dark_red())
         em.add_field(name = "Subscriber Gap Stopped", value = "The subgap message has stopped updating in your server.")
@@ -205,35 +167,39 @@ class Subscribe(commands.Cog):
         if _type: await ctx.channel.trigger_typing()
 
         base_uri = "https://www.googleapis.com/youtube/v3/channels"
-        pew_chid = "UC-lHJZR3Gqxm24_Vd_AJ5Yw"
-        ts_chid = "UCq-Fj5jknLsUf-MWSy4_brA"
+
+        youtuber = await self.bot.pool.fetchrow("SELECT first_ch, second_ch FROM sub_setup WHERE guildid = $1", ctx.guild.id)
+        if youtuber is None:
+            first_ch = "UC-lHJZR3Gqxm24_Vd_AJ5Yw"
+            second_ch = "UCq-Fj5jknLsUf-MWSy4_brA"
+        else:
+            first_ch, second_ch = youtuber
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={pew_chid}&key={config.ytdapi}") as p:
-                pew_json = await p.json()
-            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={ts_chid}&key={config.ytdapi}") as t:
-                ts_json = await t.json()
+            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={first_ch}&key={config.ytdapi}") as fh:
+                first_ch = await fh.json()
+            async with session.get(f"{base_uri}?part=snippet,contentDetails,statistics&id={second_ch}&key={config.ytdapi}") as sh:
+                second_ch = await sh.json()
 
-        pew_count = int(pew_json["items"][0]["statistics"]["subscriberCount"])
-        ts_count = int(ts_json["items"][0]["statistics"]["subscriberCount"])
+        first_count = int(first_ch["items"][0]["statistics"]["subscriberCount"])
+        second_count = int(second_ch["items"][0]["statistics"]["subscriberCount"])
 
-        if pew_count >= ts_count:
-            sg = f"PewDiePie is leading with {pew_count - ts_count:,d} more subscribers than T-Series"
+        first_name = first_ch["items"][0]["snippet"]["title"]
+        second_name = second_ch["items"][0]["snippet"]["title"]
+
+        if first_count >= second_count:
+            sg = f"{first_name} is leading with {first_count - second_count:,d} more subscribers than {second_name}"
         else:
-            sg = f"T-Series is leading with {ts_count - pew_count:,d} more subscribers than PewDiePie"
+            sg = f"{second_name} is leading with {second_count - first_count:,d} more subscribers than {first_name}"
 
         if not _type: return sg
 
         em = discord.Embed(color = discord.Color.red())
-        em.add_field(name = "PewDiePie", value = f"{pew_count:,d}")
-        em.add_field(name = "T-Series", value = f"{ts_count:,d}")
+        em.add_field(name = first_name, value = f"{first_count:,d}")
+        em.add_field(name = second_name, value = f"{second_count:,d}")
         em.add_field(name = "Leading Channel", value = sg, inline = False)
-        em.add_field(name = "Live Count Websites", value = textwrap.dedent("""
-        [PewDiePie](https://socialblade.com/youtube/user/pewdiepie/realtime) | [T-Series](https://socialblade.com/youtube/user/tseries/realtime)
-        """), inline = False)
         await ctx.send(embed = em)
 
 
 def setup(bot):
-    bot.loop.create_task(Subscribe(bot).subgcache())
     bot.add_cog(Subscribe(bot))
