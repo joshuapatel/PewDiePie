@@ -24,6 +24,7 @@ class Subscribe(commands.Cog):
     @tasks.loop(seconds = 15)
     async def subgap_task(self):
         guilds = await self.bot.pool.fetch("SELECT * FROM subgap")
+
         for msg, ch, gd in guilds:
             await self.subgcheck(gd, ch, msg)
 
