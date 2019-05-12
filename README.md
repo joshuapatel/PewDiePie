@@ -6,8 +6,7 @@ I made this bot because I was very intrigued into the PewDiePie vs T-Series war.
 
 ## How do I get authorized for the subgap command?
 
-You do not need to get authorized for this command anymore. Simply run `p.subgap` in your subgap channel and it should work.
-You can change the channels being compared by running `p.setup`.
+You do not need to get authorized for this command anymore. Simply run `p.subgap` in your subgap channel and it should work. You can change the channels being compared by running `p.setup`.
 
 ## How should I run the bot?
 
