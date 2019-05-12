@@ -92,6 +92,10 @@ class General(commands.Cog):
         em.add_field(name = "Vote", value = "[Vote for the bot](https://discordbots.org/bot/500868806776979462/vote)", inline = False)
         await ctx.send(embed = em)
 
+    @commands.command(aliases = ["github", "gh"])
+    async def source(self, ctx):
+        await ctx.send("https://www.github.com/joshuapatel/PewDiePie")
+
     @commands.command(aliases = ["prefixtutorial", "tutprefix"])
     async def prefixtut(self, ctx):
         em = discord.Embed(color = discord.Color.dark_green())
