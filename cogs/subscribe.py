@@ -81,7 +81,7 @@ class Subscribe(commands.Cog):
 
             return channel
 
-        await ctx.send("Please enter the first YouTuber's channel name.")
+        await ctx.send("What's the first channels name?")
         try:
             first_ch = await self.bot.wait_for("message", check = check, timeout = 30)
         except asyncio.TimeoutError:
@@ -93,11 +93,11 @@ class Subscribe(commands.Cog):
             first_ch = first_search["items"][0]["id"]["channelId"]
         else:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "YouTuber Not Found", value = "Couldn't find a YouTuber with that name.")
+            em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
             await ctx.send(embed = em)
             return
 
-        await ctx.send("Please enter the second YouTuber's channel name.")
+        await ctx.send("What's the second channels name?")
         try:
             second_ch = await self.bot.wait_for("message", check = check, timeout = 30)
         except asyncio.TimeoutError:
@@ -109,7 +109,7 @@ class Subscribe(commands.Cog):
             second_ch = second_search["items"][0]["id"]["channelId"]
         else:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "YouTuber Not Found", value = "Couldn't find a YouTuber with that name.")
+            em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
             await ctx.send(embed = em)
             return
 
