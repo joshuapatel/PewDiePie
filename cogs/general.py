@@ -82,14 +82,14 @@ class General(commands.Cog):
         em.add_field(name = "Support Server", value = "https://discord.gg/we4DQ5u")
         em.add_field(name = "Bot Latency", value = f"{botlat} ms")
         em.add_field(name = "Server Count", value = f"{len(self.bot.guilds):,d} servers")
-        em.add_field(name = "Vote", value = "[Vote for me](https://discordbots.org/bot/500868806776979462/vote)")
+        em.add_field(name = "Vote", value = f"[Vote for me](https://discordbots.org/bot/{self.bot.user.id}/vote)")
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["vote"])
     async def invite(self, ctx):
         em = discord.Embed(color = discord.Color.orange())
-        em.add_field(name = "Invite", value = "[Invite me here!](https://discordapp.com/oauth2/authorize?client_id=500868806776979462&scope=bot&permissions=338717761)", inline = False)
-        em.add_field(name = "Vote", value = "[Vote for the bot](https://discordbots.org/bot/500868806776979462/vote)", inline = False)
+        em.add_field(name = "Invite", value = f"[Invite me here!](https://discordapp.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=338717761)", inline = False)
+        em.add_field(name = "Vote", value = f"[Vote for the bot](https://discordbots.org/bot/{self.bot.user.id}/vote)", inline = False)
         await ctx.send(embed = em)
 
     @commands.command(aliases = ["github", "gh"])
