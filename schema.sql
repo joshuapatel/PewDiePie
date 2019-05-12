@@ -1,7 +1,3 @@
-CREATE TABLE IF NOT EXISTS authorized (
-    guildid BIGINT NOT NULL UNIQUE
-);
-
 CREATE TABLE IF NOT EXISTS econ (
     coins BIGINT NOT NULL,
     userid BIGINT NOT NULL,
@@ -53,6 +49,12 @@ CREATE TABLE IF NOT EXISTS subgapbackup (
     msgid BIGINT NOT NULL,
     channelid BIGINT NOT NULL,
     guildid BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sub_setup (
+    guildid BIGINT NOT NULL UNIQUE,
+    first_ch TEXT NOT NULL,
+    second_ch TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS warns (
