@@ -105,6 +105,7 @@ Run `python pewdiepie.py`
 |kick|Kicks a member. Reason is optional|
 |purge|Purges / clears a specified amount of messages|
 |deafen|Deafens a user. They must be in a voice channel|
+|undeafen|Undeafens a user. They must be in a voice channel|
 |setnick|Sets a user's nickname. If none is provided, it will be reset|
 |warn|Warns a user|
 |warns|Retrieves warnings for the user specified|
