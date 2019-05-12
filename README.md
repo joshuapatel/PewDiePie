@@ -6,14 +6,8 @@ I made this bot because I was very intrigued into the PewDiePie vs T-Series war.
 
 ## How do I get authorized for the subgap command?
 
-Post your server invite in the [support server](https://discord.gg/we4DQ5u) containing...
-
-1. Why we should authorize your server.
-2. Agreeing to **create a new channel for the subgap command**.
-3. Making the channel easy to view by members in your server.
-4. Changing permissions to not allow regular members to message in the subgap channel.
-
-**Please post your server invite in the [#approval](https://discordapp.com/channels/499357399690379264/521430484861976582) channel.**
+You do not need to get authorized for this command anymore. Simply run `p.subgap` in your subgap channel and it should work.
+You can change the channels being compared by running `p.setup`.
 
 ## How should I run the bot?
 
@@ -66,6 +60,7 @@ Run `python pewdiepie.py`
 |subcount|Shows T-Series' and PewDiePie's subscriber count|
 |subgap|Sends a message then automatically starts updating it every 30 seconds|
 |subgap stop (remove)|Stops the subgap message from updating in your server|
+|setup|Changes the channels in the subcount and subgap commands|
 |randomvid|Returns a random PewDiePie or T-Series video|
 |youtube (yt)|Sends you the link to PewDiePie's and T-Series' YouTube channel|
 |spoiler|Sends any message you provide as a spoiler in an annoying form|
