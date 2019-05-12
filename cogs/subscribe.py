@@ -110,8 +110,6 @@ class Subscribe(commands.Cog):
 
         return (first_ch, second_ch)
 
-    # ====Commands====
-
     @commands.command()
     @commands.has_permissions(manage_guild = True)
     async def setup(self, ctx):
