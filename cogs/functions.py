@@ -7,7 +7,7 @@ class Functions(commands.Cog):
         self.bot = bot
 
     async def add(self):
-        d = ["tasks", "econ", "subgap"]
+        d = ["tasks", "econ"]
         for entry in d:
             if not hasattr(self.bot, entry):
                 setattr(self.bot, entry, {})
