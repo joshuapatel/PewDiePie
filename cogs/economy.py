@@ -99,6 +99,11 @@ class Economy(commands.Cog):
     @commands.command(aliases = ["give", "givemoney", "send", "sendmoney", "add", "addmoney"])
     @commands.check(cad_user)
     async def pay(self, ctx, amount: AmountConverter, *, user: discord.Member):
+        if user.bot:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Cannot Transfer", value = "You cannot transfer Bro Coins to bots")
+            await ctx.send(embed = em)
+            return
         if 0 >= amount:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Too Small", value = f"You cannot send {self.tcoinimage} that is 0 or smaller")
@@ -227,6 +232,11 @@ class Economy(commands.Cog):
     @commands.check(cad_user)
     @commands.cooldown(1, 7200, commands.BucketType.member)
     async def steal(self, ctx, *, user: discord.Member):
+        if user.bot:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Cannot Steal", value = "You cannot steal from bots")
+            await ctx.send(embed = em)
+            return
         if user.id == ctx.author.id:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Cannot Steal", value = "You cannot steal from yourself")
