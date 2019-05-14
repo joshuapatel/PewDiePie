@@ -13,6 +13,14 @@ sys.path.append("../")
 import config
 
 
+async def get_message(bot, channel, msgid):
+    """Checks for a message by its ID in the internal cache. Resorts to an API call if not found"""
+    t = discord.utils.get(bot.cached_messages, id = msgid)
+    if t is not None:
+        return t
+    else:
+        return await channel.fetch_message(msgid)
+
 class Subscribe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -25,11 +33,10 @@ class Subscribe(commands.Cog):
     @tasks.loop(seconds = 15)
     async def subgap_task(self):
         guilds = await self.bot.pool.fetch("SELECT * FROM subgap")
+        self.sg.clear()
 
         for msg, ch, gd in guilds:
             await self.subgap_check(gd, ch, msg)
-
-        self.sg.clear()
 
     @subgap_task.before_loop
     async def before_subgap_task(self):
@@ -43,7 +50,7 @@ class Subscribe(commands.Cog):
             return
 
         try:
-            await check.fetch_message(message)
+            await get_message(self.bot, check, message)
         except (discord.NotFound, discord.Forbidden):
             await self.bot.pool.execute("DELETE FROM subgap WHERE guildid = $1", guild)
             return
@@ -64,7 +71,7 @@ class Subscribe(commands.Cog):
             self.sg[guild_sub[1]] = info[1]
             sub_msg = info[1][2]
 
-        await self.subgap_edit(channel, message, msg = sub_msg)
+        await self.subgap_edit(check, message, msg = sub_msg)
 
     async def subgap_edit(self, channel, message, msg = None, embed = None):
         if msg:
@@ -74,8 +81,7 @@ class Subscribe(commands.Cog):
         else:
             em = None
 
-        channel = self.bot.get_channel(channel)
-        message = await channel.fetch_message(message)
+        message = await get_message(self.bot, channel, message)
         await message.edit(embed = em or embed)
 
     async def get_channel_info(self, first_ch, second_ch):
