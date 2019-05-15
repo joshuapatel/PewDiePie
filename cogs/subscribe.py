@@ -76,12 +76,14 @@ class Subscribe(commands.Cog):
         else:
             sub_msg = f"{on} is leading with {abs(zc - oc):,d} more subscribers than {zn}"
 
-        await self.subgap_edit(check, message, msg = sub_msg)
+        await self.subgap_edit(check, message, msg = ((zn, zc), (on, oc), sub_msg))
 
     async def subgap_edit(self, channel, message, msg = None, embed = None):
         if msg:
             em = discord.Embed(color = discord.Color.blurple())
-            em.add_field(name = "Leading Channel", value = msg)
+            em.add_field(name = msg[0][0], value = f"{msg[0][1]:,d}")
+            em.add_field(name = msg[1][0], value = f"{msg[1][1]:,d}")
+            em.add_field(name = "Leading Channel", value = msg[2], inline = False)
             em.timestamp = datetime.datetime.utcnow()
         else:
             em = None
