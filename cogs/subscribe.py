@@ -197,7 +197,9 @@ class Subscribe(commands.Cog):
             sub_msg = f"{second_ch[0]} is leading with {abs(first_ch[1] - second_ch[1]):,d} more subscribers than {first_ch[0]}"
 
         em = discord.Embed(color = discord.Color.blurple())
-        em.add_field(name = "Leading Channel", value = sub_msg)
+        em.add_field(name = first_ch[0], value = f"{first_ch[1]:,d}")
+        em.add_field(name = second_ch[0], value = f"{second_ch[1]:,d}")
+        em.add_field(name = "Leading Channel", value = sub_msg, inline = False)
         em.timestamp = datetime.datetime.utcnow()
         stmsg = await ctx.send(embed = em)
 
