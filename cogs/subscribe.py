@@ -24,7 +24,7 @@ async def get_message(bot, channel, msgid):
 class Subscribe(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.sg = {}
+        self._sg = {}
         self.subgap_task.start() # pylint: disable=no-member
 
     def cog_unload(self):
@@ -33,7 +33,7 @@ class Subscribe(commands.Cog):
     @tasks.loop(seconds = 15)
     async def subgap_task(self):
         guilds = await self.bot.pool.fetch("SELECT * FROM subgap")
-        self.sg.clear()
+        self._sg.clear()
 
         for msg, ch, gd in guilds:
             await self.subgap_check(gd, ch, msg)
@@ -57,18 +57,18 @@ class Subscribe(commands.Cog):
 
         guild_sub = await self.get_guild_sub(guild)
 
-        if guild_sub[0] in self.sg:
-            zn, zc = self.sg[guild_sub[0]]
+        if guild_sub[0] in self._sg:
+            zn, zc = self._sg[guild_sub[0]]
         else:
             info = await self.get_channel_info(guild_sub[0])
-            self.sg[guild_sub[0]] = info
+            self._sg[guild_sub[0]] = info
             zn, zc = info
 
-        if guild_sub[1] in self.sg:
-            on, oc = self.sg[guild_sub[1]]
+        if guild_sub[1] in self._sg:
+            on, oc = self._sg[guild_sub[1]]
         else:
             info = await self.get_channel_info(guild_sub[1])
-            self.sg[guild_sub[1]] = info
+            self._sg[guild_sub[1]] = info
             on, oc = info
 
         if zc >= oc:
