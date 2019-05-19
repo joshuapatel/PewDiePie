@@ -23,45 +23,27 @@ class AmountConverter(commands.Converter):
 class Economy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.tcoinimage = "<:bro_coin:541363630189576193>"
+        self.bc_image = "<:bro_coin:541363630189576193>"
+        self.bot.loop.create_task(self.cache())
 
-    async def shovel_cache(self):
+    async def cache(self):
+        users = await self.bot.pool.fetch("SELECT guildid, userid FROM econ")
+        for u in users:
+            await self.bot.redis.sadd("econ_users", f"{u[0]}:{u[1]}")
+
         self.bot.econ["pos"] = await self.bot.pool.fetch("SELECT name, id FROM shovel WHERE fate = true")
         self.bot.econ["neg"] = await self.bot.pool.fetch("SELECT name, id FROM shovel WHERE fate = false")
 
-    async def user_cache(self):
-        users = await self.bot.pool.fetch("SELECT guildid, userid FROM econ")
-        self.bot.econ["users"] = {"guildid": {}}
-        for member in users:
-            if not member["guildid"] in self.bot.econ["users"]["guildid"]:
-                self.bot.econ["users"]["guildid"][member["guildid"]] = {}
-
-            self.bot.econ["users"]["guildid"][member["guildid"]][member["userid"]] = {}
-            g = self.bot.econ["users"]["guildid"][member["guildid"]][member["userid"]]
-            g["guildid"] = member["guildid"]
-            g["userid"] = member["userid"]
-
-    async def up_usercache(self, guild: int, user: int):
-        self.bot.econ["users"]["guildid"][guild][user] = {
-            "guildid": guild,
-            "userid": user
-        }
-
     async def cad_user(ctx): # pylint: disable=no-self-argument
         # pylint: disable=E1101
-        if not ctx.guild.id in ctx.bot.econ["users"]["guildid"]:
-            ctx.bot.econ["users"]["guildid"][ctx.guild.id] = {}
+        dc = await ctx.bot.redis.sismember("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
 
-        dc = ctx.bot.econ["users"]["guildid"][ctx.guild.id]
-
-        if ctx.author.id in dc:
-            return True
-        else:
+        if not dc:
             await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
-            await Economy.up_usercache(ctx, ctx.guild.id, ctx.author.id)
+            await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}", 0)
             return True
 
-        return False
+        return True
         # pylint: enable=E1101
 
     @commands.command(aliases = ["shove;", "shove", "shv", "sh", "work"])
@@ -82,7 +64,7 @@ class Economy(commands.Cog):
         except IndexError:
             phrases = {"id": 1, "name": "You need {ctg} {tcoinimage} to add shovel phrases."}
 
-        message = phrases["name"].replace("{ctg}", f"{ctg:,d}").replace("{tcoinimage}", self.tcoinimage)
+        message = phrases["name"].replace("{ctg}", f"{ctg:,d}").replace("{tcoinimage}", self.bc_image)
 
         if fate:
             em = discord.Embed(color = discord.Color.green())
@@ -101,7 +83,7 @@ class Economy(commands.Cog):
     async def pay(self, ctx, amount: AmountConverter, *, user: discord.Member):
         if 0 >= amount:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Too Small", value = f"You cannot send {self.tcoinimage} that is 0 or smaller")
+            em.add_field(name = "Too Small", value = f"You cannot send {self.bc_image} that is 0 or smaller")
             await ctx.send(embed = em)
             return
 
@@ -115,12 +97,12 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("UPDATE econ SET coins = coins - $1 WHERE userid = $2 AND guildid = $3", amount, ctx.author.id, ctx.guild.id)
 
             em = discord.Embed(color = discord.Color.dark_green())
-            em.add_field(name = f"Sent Bro Coin to {user.name}#{user.discriminator}", value = f"{amount:,d} {self.tcoinimage} was sent to {user.mention}")
+            em.add_field(name = f"Sent Bro Coin to {user.name}#{user.discriminator}", value = f"{amount:,d} {self.bc_image} was sent to {user.mention}")
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed = em)
         else:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Not Enough", value = f"You do not have enough {self.tcoinimage} to send {amount:,d}")
+            em.add_field(name = "Not Enough", value = f"You do not have enough {self.bc_image} to send {amount:,d}")
             await ctx.send(embed = em)
 
     @commands.command(aliases = ["bal", "money", "cash", "$", "coins", "coin", "bank"])
@@ -145,7 +127,7 @@ class Economy(commands.Cog):
 
         em = discord.Embed(color = discord.Color.blue())
         em.set_author(name = f"{uid.name}#{uid.discriminator}", icon_url = uid.avatar_url)
-        em.add_field(name = "Bro Coins", value = f"{bal:,d} {self.tcoinimage}")
+        em.add_field(name = "Bro Coins", value = f"{bal:,d} {self.bc_image}")
         em.add_field(name = "Economy Uses", value = f"{uses:,d} {u}")
         await ctx.send(embed = em)
 
@@ -185,7 +167,7 @@ class Economy(commands.Cog):
             coins = format(x["coins"], ",d")
             uses = format(x["uses"], ",d")
 
-            em.add_field(name = f"#{lbcount} - {uname} ({gname})", value = f"Bro Coins: {coins} {self.tcoinimage}\nShovel Uses: {uses}", inline = False)
+            em.add_field(name = f"#{lbcount} - {uname} ({gname})", value = f"Bro Coins: {coins} {self.bc_image}\nShovel Uses: {uses}", inline = False)
 
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
         em.set_footer(text = f"PROTIP: Use {prefix}shovel to collect Bro Coins")
@@ -198,7 +180,7 @@ class Economy(commands.Cog):
         usercoins = await self.bot.pool.fetchval("SELECT coins FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
         if 0 >= amount:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Too Small", value = f"You cannot gamble {self.tcoinimage} that is 0 or smaller")
+            em.add_field(name = "Too Small", value = f"You cannot gamble {self.bc_image} that is 0 or smaller")
             await ctx.send(embed = em)
             self.bot.get_command("gamble").reset_cooldown(ctx)
             return
@@ -214,11 +196,11 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", amount, ctx.author.id, ctx.guild.id)
 
             em = discord.Embed(color = discord.Color.dark_red())
-            em.add_field(name = f"You {cm} Coins", value = f"You have {cm.lower()} {amount:,d} {self.tcoinimage} from the gamble")
+            em.add_field(name = f"You {cm} Coins", value = f"You have {cm.lower()} {amount:,d} {self.bc_image} from the gamble")
             await ctx.send(embed = em)
         else:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Not Enough", value = f"You do not have {amount:,d} {self.tcoinimage} to gamble")
+            em.add_field(name = "Not Enough", value = f"You do not have {amount:,d} {self.bc_image} to gamble")
             await ctx.send(embed = em)
 
             self.bot.get_command("gamble").reset_cooldown(ctx)
@@ -259,7 +241,7 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", give, ctx.author.id, ctx.guild.id)
 
             em = discord.Embed(color = discord.Color.dark_red())
-            em.add_field(name = f"Stole from {user.name}", value = f"You stole {give:,d} {self.tcoinimage} from {user.mention}")
+            em.add_field(name = f"Stole from {user.name}", value = f"You stole {give:,d} {self.bc_image} from {user.mention}")
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed = em)
         else:
@@ -272,7 +254,7 @@ class Economy(commands.Cog):
     async def transfer(self, ctx, amount: AmountConverter, *, guild: str):
         if 0 >= amount:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Too Small", value = f"You cannot transfer {self.tcoinimage} that is 0 or smaller")
+            em.add_field(name = "Too Small", value = f"You cannot transfer {self.bc_image} that is 0 or smaller")
             await ctx.send(embed = em)
             return
 
@@ -304,12 +286,12 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("UPDATE econ SET coins = coins - $1 WHERE userid = $2 AND guildid = $3", amount, ctx.author.id, ctx.guild.id)
 
             em = discord.Embed(color = discord.Color.dark_red())
-            em.add_field(name = "Bro Coins Transferred", value = f"{amount:,d} {self.tcoinimage} has been transferred to `{guild.name}`")
+            em.add_field(name = "Bro Coins Transferred", value = f"{amount:,d} {self.bc_image} has been transferred to `{guild.name}`")
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed = em)
         else:
             em = discord.Embed(color = discord.Color.dark_teal())
-            em.add_field(name = "Not Enough", value = f"You do not have enough Bro Coins to transfer {amount:,d} {self.tcoinimage} to `{guild.name}`")
+            em.add_field(name = "Not Enough", value = f"You do not have enough Bro Coins to transfer {amount:,d} {self.bc_image} to `{guild.name}`")
             em.set_footer(text = "NOTE: You are only able to transfer up to 50% of your Bro Coins")
             await ctx.send(embed = em)
 
@@ -339,10 +321,10 @@ class Economy(commands.Cog):
         em = discord.Embed(color = discord.Color.red())
         em.set_author(name = "Bro Coin Statistics")
         em.add_field(name = "Accounts", value = f"{tcusbcount:,d} accounts")
-        em.add_field(name = "Average Amount", value = f"{round(tcavg):,d} {self.tcoinimage}")
-        em.add_field(name = "Total Amount", value = f"{round(tcall):,d} {self.tcoinimage}")
+        em.add_field(name = "Average Amount", value = f"{round(tcavg):,d} {self.bc_image}")
+        em.add_field(name = "Total Amount", value = f"{round(tcall):,d} {self.bc_image}")
         em.add_field(name = "Leading User", value = f"{tluname}")
-        em.add_field(name = "Leading User Amount", value = f"{tlu['coins']:,d} {self.tcoinimage}")
+        em.add_field(name = "Leading User Amount", value = f"{tlu['coins']:,d} {self.bc_image}")
         em.add_field(name = "Shovel Phrases", value = f"{spc:,d} phrases")
         em.add_field(name = "Shovel Uses", value = f"{round(tcsuses):,d} {u}")
         em.add_field(name = "Positive Phrases", value = f"{ft:,d} phrases")
@@ -353,6 +335,4 @@ class Economy(commands.Cog):
 
 
 def setup(bot):
-    bot.loop.create_task(Economy(bot).shovel_cache())
-    bot.loop.create_task(Economy(bot).user_cache())
     bot.add_cog(Economy(bot))
