@@ -7,6 +7,7 @@ class EconomyCrime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tcoinimage = "<:bro_coin:541363630189576193>"
+        self.bot.loop.create_task(EconomyCrime(bot).crime_cache())
 
     async def crime_cache(self):
         self.bot.econ["crime"] = {}
@@ -15,21 +16,14 @@ class EconomyCrime(commands.Cog):
 
     async def cad_user(ctx): # pylint: disable=no-self-argument
         # pylint: disable=E1101
-        economy = ctx.bot.get_cog("Economy")
+        dc = await ctx.bot.redis.sismember("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
 
-        if not ctx.guild.id in ctx.bot.econ["users"]["guildid"]:
-            ctx.bot.econ["users"]["guildid"][ctx.guild.id] = {}
-
-        dc = ctx.bot.econ["users"]["guildid"][ctx.guild.id]
-
-        if ctx.author.id in dc:
-            return True
-        else:
+        if not dc:
             await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
-            await economy.up_usercache(ctx.guild.id, ctx.author.id)
+            await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
             return True
 
-        return False
+        return True
         # pylint: enable=E1101
 
     @commands.command()
@@ -66,5 +60,4 @@ class EconomyCrime(commands.Cog):
 
 
 def setup(bot):
-    bot.loop.create_task(EconomyCrime(bot).crime_cache())
     bot.add_cog(EconomyCrime(bot))
