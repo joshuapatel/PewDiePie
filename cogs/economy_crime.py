@@ -7,7 +7,7 @@ class EconomyCrime(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tcoinimage = "<:bro_coin:541363630189576193>"
-        self.bot.loop.create_task(EconomyCrime(bot).crime_cache())
+        self.bot.loop.create_task(self.crime_cache())
 
     async def crime_cache(self):
         self.bot.econ["crime"] = {}
