@@ -40,7 +40,7 @@ class Economy(commands.Cog):
 
         if not dc:
             await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
-            await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}", 0)
+            await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
             return True
 
         return True
