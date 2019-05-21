@@ -78,7 +78,7 @@ class PewDiePie(commands.AutoShardedBot):
         except Exception as error:
             print("There was a problem")
             print("\n" + str(error))
-            await self.stop()
+            await super().logout()
 
         with open("schema.sql", "r") as schema:
             await self.pool.execute(schema.read())
