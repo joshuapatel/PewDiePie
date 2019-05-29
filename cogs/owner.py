@@ -85,44 +85,6 @@ class Owner(commands.Cog):
         except Exception as e:
             await ctx.send(e)
 
-    @commands.command(name = "eval")
-    async def ev(self, ctx, *, code: str):
-        """From R. Danny. I did not make this command"""
-        env = {
-            "bot": self.bot,
-            "ctx": ctx,
-            "channel": ctx.channel,
-            "author": ctx.author,
-            "guild": ctx.guild,
-            "message": ctx.message
-        }
-
-        env.update(globals())
-        stdout = io.StringIO()
-        to_compile = f"async def func():\n{textwrap.indent(code, '  ')}"
-
-        try:
-            exec(to_compile, env)
-        except Exception as e:
-            return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
-
-        func = env["func"]
-
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-        except Exception as e:
-            value = stdout.getvalue()
-            await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
-        else:
-            value = stdout.getvalue()
-            if ret is None:
-                if value:
-                    await ctx.send(f"```py\n{value}\n```")
-            else:
-                _last_result = ret
-                await ctx.send(f"```py\n{value}{ret}\n```")
-
 
 def setup(bot):
     bot.add_cog(Owner(bot))
