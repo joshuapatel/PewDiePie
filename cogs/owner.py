@@ -6,11 +6,6 @@ import datetime
 import re
 import inspect
 import psutil
-# -> Eval
-from contextlib import redirect_stdout
-import textwrap
-import io
-import traceback
 # -> Loop
 import asyncio
 # -> Configuration
