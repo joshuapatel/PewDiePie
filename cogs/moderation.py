@@ -40,7 +40,7 @@ class Moderation(commands.Cog):
             return
 
         try:
-            if reason == None:
+            if reason is None:
                 r = "You have been banned."
             else:
                 r = reason
@@ -73,7 +73,7 @@ class Moderation(commands.Cog):
             return
 
         try:
-            if reason == None:
+            if reason is None:
                 r = "You have been kicked."
             else:
                 r = reason
@@ -98,7 +98,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_guild = True)
     @commands.bot_has_permissions(manage_guild = True)
     async def deafen(self, ctx, *, user: discord.Member):
-        if user.voice == None:
+        if user.voice is None:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Cannot Deafen", value = "You can only deafen members that are in a voice channel.")
             await ctx.send(embed = em)
@@ -114,7 +114,7 @@ class Moderation(commands.Cog):
     @commands.has_permissions(manage_guild = True)
     @commands.bot_has_permissions(manage_guild = True)
     async def undeafen(self, ctx, *, user: discord.Member):
-        if user.voice == None:
+        if user.voice is None:
             em = discord.Embed(color = discord.Color.dark_teal())
             em.add_field(name = "Cannot Undeafen", value = "You can only undeafen members that are in a voice channel.")
             await ctx.send(embed = em)
@@ -138,7 +138,7 @@ class Moderation(commands.Cog):
 
             em = discord.Embed(color = discord.Color.red())
 
-            if nickname == None:
+            if nickname is None:
                 em.add_field(name = "Reset Nickname", value = f"{user.mention}'s nickname has been reset.")
             else:
                 em.add_field(name = "Set Nickname", value = f"{user.mention}'s nickname has been set to `{nickname}`")
@@ -182,11 +182,11 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases = ["warnings"])
     async def warns(self, ctx, *, user: discord.Member = None):
-        if user == None:
-            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE guildid = $1", ctx.guild.id)
+        if user is None:
+            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE guildid = $1 ORDER BY time DESC", ctx.guild.id)
             title = f"There are {len(warns)} warning(s) in this server."
         else:
-            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+            warns = await self.bot.pool.fetch("SELECT * FROM warns WHERE userid = $1 AND guildid = $2 ORDER BY time DESC", user.id, ctx.guild.id)
             title = f"{user.name} has {len(warns)} warning(s)."
 
         if warns == []:
@@ -203,13 +203,13 @@ class Moderation(commands.Cog):
 
             isname = ctx.guild.get_member(warning["issuerid"])
 
-            if user == None:
+            if user is None:
                 isname = ctx.guild.get_member(warning["userid"])
-                if isname == None:
+                if isname is None:
                     isname = "Unknown User"
                 else:
                     isname = isname.name
-            elif isname == None:
+            elif isname is None:
                 isname = warning["issuername"]
             else:
                 isname = isname.name
