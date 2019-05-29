@@ -5,13 +5,8 @@ from discord.ext import commands
 import datetime
 import re
 import inspect
-import psutil
 # -> Loop
 import asyncio
-# -> Configuration
-import sys
-sys.path.append("../")
-import config # Note: Only importing config module since it's easier to use in eval
 
 
 class Owner(commands.Cog):
