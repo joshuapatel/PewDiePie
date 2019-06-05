@@ -235,7 +235,7 @@ class General(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get('https://official-joke-api.appspot.com/random_joke') as r:
                 raw = await r.json()
-                embed = discord.Embed(title="Joke", description=f"{raw['setup']}\n\n{raw['punchline']}" color=discord.Color.red())
+                embed = discord.Embed(title="Joke", description=f"{raw['setup']}\n\n{raw['punchline']}", color=discord.Color.red())
                 await ctx.send(embed=embed)
 
 
