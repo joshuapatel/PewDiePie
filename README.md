@@ -1,5 +1,7 @@
 # PewDiePie Discord Bot
 
+Do you have any more questions about the bot? Send a DM to **A Discord User#4063** or join the [support server](https://discord.gg/we4DQ5u).
+
 ## Why did I make this bot?
 
 I made this bot because I was very intrigued into the PewDiePie vs T-Series war. I wanted to do my part and make a bot.
@@ -119,8 +121,5 @@ Run `python pewdiepie.py`
 |prefixtut|This will give you a tutorial on how to use custom prefixes on the bot|
 |prefix|Returns the current prefix which the bot uses in your server|
 |setprefix (sprefix)|Sets the bot prefix or resets it if there is no prefix defined|
-
-
-Do you have any more questions about the bot? Send a DM to **A Discord User#4063** or join the [support server](https://discord.gg/we4DQ5u).
 
 [![Discord Bots](https://discordbots.org/api/widget/500868806776979462.svg)](https://discordbots.org/bot/500868806776979462)
