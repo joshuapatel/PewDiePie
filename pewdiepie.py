@@ -24,8 +24,7 @@ async def custom_prefix(bot, message):
     try:
         prefix = bot.prefixes.get(message.guild.id)
     except AttributeError:
-        rnd = random.randint(12**2, 12**4)
-        return str(rnd)
+        return str(random.random())
 
     if prefix is None:
         return commands.when_mentioned_or(*bot.default_prefixes)(bot, message)
@@ -45,12 +44,12 @@ class PewDiePie(commands.AutoShardedBot):
             case_insensitive = True,
             max_messages = 500,
             fetch_offline_members = False,
-            reconnect = True,
-            owner_id = 498678645716418578
+            reconnect = True
         )
         self.pool = None
-        self.redis = None
         self.prefixes = {}
+        self.owner_role = config.owner
+        self.owners = []
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):
@@ -58,7 +57,11 @@ class PewDiePie(commands.AutoShardedBot):
 
         print(f"{self.user.name} is ready!")
 
+    async def is_owner(self, user):
+        return user.id in self.owners
+
     async def on_connect(self):
+        # Database and cache
         pool_creds = {
             "user": config.db_user,
             "password": config.db_password,
@@ -83,6 +86,16 @@ class PewDiePie(commands.AutoShardedBot):
         with open("schema.sql", "r") as schema:
             await self.pool.execute(schema.read())
 
+        # Owners
+        if len(self.owner_role) == 2:
+            guild = self.get_guild(self.owner_role[0])
+            role = guild.get_role(self.owner_role[1])
+            self.owners.extend([r.id for r in role.members])
+        else:
+            app = await self.application_info()
+            self.owners.append(app.owner.id)
+
+        # Prefixes
         self.default_prefixes = [
             "p.", "P.", "p!", "P!",
             "t.", "t!", "ts!", "ts.",
@@ -90,10 +103,7 @@ class PewDiePie(commands.AutoShardedBot):
             "Ts.", "tS.", "TS."
         ]
 
-        await self.redis.hmset_dict("prefixes", dict(await self.pool.fetch("SELECT * FROM prefixes")))
-
-        async for guild, prefix in self.redis.ihscan("prefixes"):
-            self.prefixes[int(guild)] = prefix.decode()
+        self.prefixes = dict(await self.pool.fetch("SELECT * FROM prefixes"))
 
         self.prepare_extensions()
 
