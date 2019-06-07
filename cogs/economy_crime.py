@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import asyncio
 
 
 class EconomyCrime(commands.Cog):
@@ -16,14 +17,17 @@ class EconomyCrime(commands.Cog):
 
     async def cad_user(ctx): # pylint: disable=no-self-argument
         # pylint: disable=E1101
-        dc = await ctx.bot.redis.sismember("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
+        lock = asyncio.Lock(loop=ctx.bot.loop)
 
-        if not dc:
-            await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
-            await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
+        async with lock:
+            dc = await ctx.bot.redis.sismember("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
+
+            if not dc:
+                await ctx.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
+                await ctx.bot.redis.sadd("econ_users", f"{ctx.guild.id}:{ctx.author.id}")
+                return True
+
             return True
-
-        return True
         # pylint: enable=E1101
 
     @commands.command()
