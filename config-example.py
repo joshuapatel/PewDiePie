@@ -1,15 +1,3 @@
-"""
-Rename this file to config.py. You will need PostgreSQL, discord.py rewrite, asyncpg, and jishaku.
-
-Download PostgreSQL: https://www.postgresql.org/download/
-
-discord.py rewrite: `pip install -U discord.py[voice]`
-
-asyncpg: `pip install -U asyncpg`
-
-jishaku: `pip install -U jishaku`
-"""
-
 privtoken = "" # Use this token for testing on your development bot
 pubtoken = "" # Use this token on your live bot
 
@@ -24,3 +12,6 @@ db_user = "" # Username for logging into your database
 db_password = "" # Password for your database
 
 # Please note that you must have a database called tseries
+
+owner = () # A tuple containing the role guild ID and the role ID. This allows you to set everyone who has this role owns the bot.
+# Leave this as is if you are going to be the only owner
