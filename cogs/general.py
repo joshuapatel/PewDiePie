@@ -238,6 +238,18 @@ class General(commands.Cog):
                 embed = discord.Embed(title="Joke", description=f"{raw['setup']}\n\n{raw['punchline']}", color=discord.Color.red())
                 await ctx.send(embed=embed)
 
+    @commands.command()
+    async def dadjoke(self, ctx):
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://icanhazdadjoke.com/', headers=headers) as r:
+                raw = await r.json()
+                embed = discord.Embed(title="Joke", description=f"{raw['joke']}", color=discord.Color.red())
+                await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(General(bot))

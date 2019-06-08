@@ -21,6 +21,7 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}spoiler [message]", value = "Sends any message you provide as a spoiler in an annoying form", inline = False)
         em.add_field(name = f"{prefix}meme", value = "Sends a random meme from one of the best meme subreddits", inline = False)
         em.add_field(name = f"{prefix}joke", value = "Sends a random joke from a joke api", inline = False)
+        em.add_field(name = f"{prefix}dadjoke", value = "Sends a random dadjoke from a dadjoke api", inline = False)
 
         return em
 
