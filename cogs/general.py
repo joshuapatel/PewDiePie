@@ -77,7 +77,7 @@ class General(commands.Cog):
         botlat = round(self.bot.latency * 1000, 3)
 
         em = discord.Embed(title = f"{self.bot.user.name} Information", color = discord.Color.green())
-        em.add_field(name = "Bot Creator", value = self.bot.get_user(self.bot.owner_id))
+        em.add_field(name = "Bot Creator", value = self.bot.get_user(self.bot.owner_id) or "Multiple")
         em.add_field(name = "Bot Library", value = "discord.py rewrite")
         em.add_field(name = "Support Server", value = "https://discord.gg/we4DQ5u")
         em.add_field(name = "Bot Latency", value = f"{botlat} ms")
