@@ -1,6 +1,6 @@
 # PewDiePie Discord Bot
 
-Do you have any more questions about the bot? Send a DM to **A Discord User#4063** or join the [support server](https://discord.gg/we4DQ5u).
+Do you have any more questions about the bot? Send a DM to **Kowlin#4417 or A Trash Coder#0981** or join the [support server](https://discord.gg/we4DQ5u).
 
 ## Why did I make this bot?
 
