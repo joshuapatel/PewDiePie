@@ -20,7 +20,7 @@ class ErrorHandler(commands.Cog, name = "Error Handler"):
             commands.BotMissingPermissions: {"msg": "The bot does not have permissions to run this command.", "ty": "Bot Missing Permissions"},
             discord.HTTPException: {"msg": "There was an error connecting to Discord. Please try again.", "ty": "HTTP Exception"},
             commands.CommandInvokeError: {"msg": "There was an issue running the command.\n[ERROR]", "ty": "Command Invoke Error"},
-            commands.NotOwner: {"msg": "You are not the owner.", "ty": "Not Owner"}
+            commands.NotOwner: {"msg": "You are not an owner.", "ty": "Not Owner"}
         }
 
         ex = (commands.MissingRequiredArgument, commands.CommandOnCooldown, commands.CommandNotFound)
