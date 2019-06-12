@@ -3,7 +3,7 @@ from discord.ext import commands
 import humanize
 
 
-class ErrorHandler(commands.Cog, name = "Error Handler"):
+class ErrorHandler(commands.Cog, name="Error Handler"):
     def __init__(self, bot):
         self.bot = bot
 
