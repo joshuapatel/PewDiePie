@@ -90,7 +90,7 @@ class Economy(commands.Cog):
     @commands.cooldown(1, 86400, commands.BucketType.member)
     async def daily(self, ctx):
 
-        ctg = 10,000
+        ctg = 10000
 
         em = discord.Embed(colour = discord.Colour.green())
         em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg} {self.bc_image} brocoins!")
