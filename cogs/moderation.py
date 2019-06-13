@@ -4,6 +4,20 @@ import datetime
 import utils.paginator as paginator
 
 
+class BannedMember(commands.Converter):
+    async def convert(self, ctx, argument):
+        ban_list = await ctx.guild.bans()
+        try:
+            member_id = int(argument, base=10)
+            entity = discord.utils.find(lambda u: u.user.id == member_id, ban_list)
+        except ValueError:
+            entity = discord.utils.find(lambda u: str(u.user) == argument, ban_list)
+
+        if entity is None:
+            embed=discord.Embed(title="Error", description="That user is not banned.", color=discord.Color.dark_teal())
+            await ctx.send(embed=embed)
+        return entity
+
 class Paginator(paginator.EmbedInterface):
     def __init__(self, ctx, pag):
         self.ctx = ctx
@@ -49,6 +63,22 @@ class Moderation(commands.Cog):
             await user.send(embed = em)
         except discord.Forbidden:
             pass
+
+    @commands.command()
+    @commands.has_permissions(ban_members = True)
+    @commands.bot_has_permissions(ban_members = True)
+    async def unban(self, ctx, member: BannedMember):
+        try:
+            await ctx.guild.unban(member.user)
+
+            em = discord.Embed(color = discord.Color.red())
+            em.add_field(name = "Un-Banned", value = f"{member.user.mention} has been unbanned.")
+            await ctx.send(embed = em)
+        except discord.Forbidden:
+            em = discord.Embed(color = discord.Color.dark_teal())
+            em.add_field(name = "Forbidden", value = "Please check that the bot has permissions to ban this member.")
+            await ctx.send(embed = em)
+            return
 
     @commands.command()
     @commands.has_permissions(kick_members = True)
