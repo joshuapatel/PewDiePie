@@ -93,7 +93,7 @@ class Economy(commands.Cog):
         ctg = 10000
 
         em = discord.Embed(colour = discord.Colour.green())
-        em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg} {self.bc_image} brocoins!")
+        em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg:,d} {self.bc_image} brocoins!")
         await ctx.send(embed = em)
 
         await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
