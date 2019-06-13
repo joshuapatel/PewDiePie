@@ -46,6 +46,12 @@ class Snipe(commands.Cog):
 
     @snipe.command(aliases = ["ch"])
     async def channel(self, ctx, chid: discord.TextChannel):
+        if chid.is_nsfw():
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="NSFW Channel Required", value="You cannot snipe an NSFW channel from a non NSFW channel.")
+            await ctx.send(embed=em)
+            return
+
         data = await self.bot.pool.fetchrow(f"SELECT * FROM snipe WHERE guild = $1 AND channel = $2 {self.ta}", ctx.guild.id, chid.id)
         await self.data(ctx, data)
 
