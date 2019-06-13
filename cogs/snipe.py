@@ -46,7 +46,7 @@ class Snipe(commands.Cog):
 
     @snipe.command(aliases = ["ch"])
     async def channel(self, ctx, chid: discord.TextChannel):
-        if chid.is_nsfw():
+        if chid.is_nsfw() and not ctx.channel.is_nsfw():
             em = discord.Embed(color=discord.Color.dark_teal())
             em.add_field(name="NSFW Channel Required", value="You cannot snipe an NSFW channel from a non NSFW channel.")
             await ctx.send(embed=em)
