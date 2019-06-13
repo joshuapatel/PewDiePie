@@ -47,6 +47,7 @@ class HelpPages(commands.Cog):
         em.set_author(name = "Economy Commands")
 
         em.add_field(name = f"{prefix}shovel", value = "You work all day shoveling for Bro Coins", inline = False)
+        em.add_field(name = f"{prefix}daily", value = "You get a bonus for shoveling", inline = False)
         em.add_field(name = f"{prefix}crime", value = "You commit a crime and gain or lose coins based on your success", inline = False)
         em.add_field(name = f"{prefix}balance (bal)", value = "Pays a user with a specified amount of Bro Coins", inline = False)
         em.add_field(name = f"{prefix}leaderboard (lb)", value = "Shows the leaderboard for Bro Coins", inline = False)

@@ -85,6 +85,21 @@ class Economy(commands.Cog):
         await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
         await self.bot.pool.execute("UPDATE econ SET uses = uses + 1 WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
 
+    @commands.command(aliases = ["day", "dai;y"])
+    @commands.check(cad_user)
+    @commands.cooldown(1, 86400, commands.BucketType.member)
+    async def daily(self, ctx):
+
+        ctg = 10,000
+
+        em = discord.Embed(colour = discord.Colour.green())
+        em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg} {self.bc_image} brocoins!")
+        await ctx.send(embed = em)
+
+        await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
+        await self.bot.pool.execute("UPDATE econ SET uses = uses + 1 WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+
+
     @commands.command(aliases = ["give", "givemoney", "send", "sendmoney", "add", "addmoney"])
     @commands.check(cad_user)
     async def pay(self, ctx, amount: AmountConverter, *, user: discord.Member):
