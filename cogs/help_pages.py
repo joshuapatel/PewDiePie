@@ -105,8 +105,6 @@ class HelpPages(commands.Cog):
 
         em.add_field(name = f"{prefix}ban [@user] [optional: reason]", value = "Bans a member",
         inline = False)
-        em.add_field(name = f"{prefix}unban [user id]", value = "Un-Bans a member",
-        inline = False)
         em.add_field(name = f"{prefix}kick [@user] [optional: reason]", value = "Kicks a member",
         inline = False)
         em.add_field(name = f"{prefix}purge [amount of messages]", value = "Purges a specified amount of messages from the channel",
