@@ -35,11 +35,11 @@ You will need...
 
 Note your username and password.
 
-1. **Fill out credentials**
+4. **Fill out credentials**
 
 Open up `config-example.py` and follow the instructions in the docstring.
 
-6. **Start the bot**
+5. **Start the bot**
 
 Run `python pewdiepie.py`
 
