@@ -65,3 +65,9 @@ CREATE TABLE IF NOT EXISTS warns (
     reason TEXT NOT NULL,
     time TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS daily (
+    userid BIGINT NOT NULL,
+    guildid BIGINT NOT NULL,
+    time TIMESTAMP NOT NULL
+);
