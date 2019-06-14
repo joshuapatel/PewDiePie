@@ -20,8 +20,8 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}youtube (yt)", value = "Sends you the link to PewDiePie's and T-Series' YouTube channel", inline = False)
         em.add_field(name = f"{prefix}spoiler [message]", value = "Sends any message you provide as a spoiler in an annoying form", inline = False)
         em.add_field(name = f"{prefix}meme", value = "Sends a random meme from one of the best meme subreddits", inline = False)
-        em.add_field(name = f"{prefix}joke", value = "Sends a random joke from a joke api", inline = False)
-        em.add_field(name = f"{prefix}dadjoke", value = "Sends a random dadjoke from a dadjoke api", inline = False)
+        em.add_field(name = f"{prefix}joke", value = "Sends a random joke", inline = False)
+        em.add_field(name = f"{prefix}dadjoke", value = "Sends a random dad joke", inline = False)
 
         return em
 
@@ -49,7 +49,8 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}shovel", value = "You work all day shoveling for Bro Coins", inline = False)
         em.add_field(name = f"{prefix}daily", value = "You get a bonus for shoveling", inline = False)
         em.add_field(name = f"{prefix}crime", value = "You commit a crime and gain or lose coins based on your success", inline = False)
-        em.add_field(name = f"{prefix}balance (bal)", value = "Pays a user with a specified amount of Bro Coins", inline = False)
+        em.add_field(name = f"{prefix}balance (bal) [optional: user]", value = "Shows a users Bro Coin balance", inline = False)
+        em.add_field(name = f"{prefix}pay", value = "Pays a user with a specified amount of Bro Coins", inline = False)
         em.add_field(name = f"{prefix}leaderboard (lb)", value = "Shows the leaderboard for Bro Coins", inline = False)
         em.add_field(name = f"{prefix}leaderboard server (guild)", value = "Shows the leaderboard of Bro Coins for your server", inline = False)
         em.add_field(name = f"{prefix}gamble [coins/all]", value = "You can gamble a specific amount of Bro Coins", inline = False)
