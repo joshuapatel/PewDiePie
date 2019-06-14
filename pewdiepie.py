@@ -6,9 +6,8 @@ import config
 # -> Miscellaneous
 import random
 import datetime
-# -> Database and cache
+# -> Database
 import asyncpg
-import aioredis
 # -> Loop
 import asyncio
 import sys
@@ -61,7 +60,7 @@ class PewDiePie(commands.AutoShardedBot):
         return user.id in self.owners
 
     async def on_connect(self):
-        # Database and cache
+        # Database
         pool_creds = {
             "user": config.db_user,
             "password": config.db_password,
