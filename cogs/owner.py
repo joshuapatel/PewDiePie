@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 # -> Miscellaneous
-import datetime
 import re
 import inspect
 # -> Loop
@@ -20,6 +19,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def update(self, ctx):
+        """Pulls the latest commit and updates cogs"""
         pro = await asyncio.create_subprocess_exec(
             "git", "pull",
             stdout = asyncio.subprocess.PIPE,
@@ -66,14 +66,6 @@ class Owner(commands.Cog):
                 await ctx.send(f"Updated cogs: {final_string}")
         else:
             await ctx.send("No cogs were updated")
-
-    @commands.command()
-    async def redis(self, ctx, *args):
-        try:
-            cmd = await self.bot.redis.execute(*args)
-            await ctx.send(getattr(cmd, "decode", cmd.__str__)())
-        except Exception as e:
-            await ctx.send(e)
 
 
 def setup(bot):
