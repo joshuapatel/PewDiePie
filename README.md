@@ -35,13 +35,7 @@ You will need...
 
 Note your username and password.
 
-4. **Install Redis**
-
-The latest version of Redis is recommended.
-
-Using port `6379` running on `localhost` is the default configuration. You can change the port number and address in the `pewdiepie.py` file.
-
-5. **Fill out credentials**
+1. **Fill out credentials**
 
 Open up `config-example.py` and follow the instructions in the docstring.
 
@@ -74,6 +68,7 @@ Run `python pewdiepie.py`
 |crime|You commit a crime and gain or lose coins based on your success|
 |balance (bal)|Informs you on the amount of Bro Coins you have|
 |pay|Pays another user a specified amount of Bro Coins|
+|daily|Reedems your daily bonus of Bro Coins|
 |leaderboard (lb)|Shows the leaderboard for Bro Coins|
 |leaderboard server (guild)|Shows the leaderboard of Bro Coins for your server|
 |gamble|Gambles all or a specific amount of Bro Coins|
