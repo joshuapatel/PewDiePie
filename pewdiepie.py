@@ -14,7 +14,7 @@ import asyncio
 import sys
 import os
 
-# Supports asyncio subprocesses for Windows
+# Supports asyncio subprocesses for Windows (Python 3.7+)
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
@@ -49,7 +49,7 @@ class PewDiePie(commands.AutoShardedBot):
         self.pool = None
         self.prefixes = {}
         self.owner_role = config.owner
-        self.owners = []
+        self.owners = set()
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):
@@ -70,14 +70,8 @@ class PewDiePie(commands.AutoShardedBot):
             "database": "tseries"
         }
 
-        redis_creds = {
-            "address": ("localhost", 6379)
-        }
-
         try:
             self.pool = await asyncpg.create_pool(**pool_creds)
-            self.redis = await aioredis.create_redis_pool(**redis_creds)
-            await self.redis.flushdb(async_op = True)
         except Exception as error:
             print("There was a problem")
             print("\n" + str(error))
@@ -90,10 +84,10 @@ class PewDiePie(commands.AutoShardedBot):
         if len(self.owner_role) == 2:
             guild = self.get_guild(self.owner_role[0])
             role = guild.get_role(self.owner_role[1])
-            self.owners.extend([r.id for r in role.members])
+            self.owners.update(r.id for r in role.members)
         else:
             app = await self.application_info()
-            self.owners.append(app.owner.id)
+            self.owners.add(app.owner.id)
 
         # Prefixes
         self.default_prefixes = [
@@ -123,8 +117,6 @@ class PewDiePie(commands.AutoShardedBot):
             await self.stop()
 
     async def stop(self):
-        self.redis.close()
-        await self.redis.wait_closed()
         await self.pool.close()
         await super().logout()
 
