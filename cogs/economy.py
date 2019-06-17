@@ -176,7 +176,10 @@ class Economy(commands.Cog):
         if user is None:
             user = ctx.author
 
-        coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+        try:
+            coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+        except TypeError:
+            coins = uses = 0
 
         if uses == 1:
             u = "use"
