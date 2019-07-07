@@ -71,3 +71,7 @@ CREATE TABLE IF NOT EXISTS daily (
     guildid BIGINT NOT NULL,
     time TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS fbblocked (
+    userid BIGINT NOT NULL
+);
