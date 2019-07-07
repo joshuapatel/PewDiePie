@@ -17,6 +17,21 @@ import config
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self._8ball_responses = (
+            "It is certain.",
+            "Without a doubt.",
+            "Yes - definitely.",
+            "As I see it, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Don't count on it.",
+            "Outlook not so good.",
+            "Very doubtful."
+        )
 
     @commands.command()
     async def randomvid(self, ctx):
@@ -256,6 +271,17 @@ class General(commands.Cog):
                 raw = await r.json()
                 embed = discord.Embed(title="Joke", description=f"{raw['joke']}", color=discord.Color.red())
                 await ctx.send(embed=embed)
+
+    @commands.command(name="8ball")
+    @commands.guild_only()
+    async def _8ball(self, ctx, *, question: str):
+        await ctx.channel.trigger_typing()
+
+        answer = random.choice(self._8ball_responses)
+        em = discord.Embed(title = "8ball", color = discord.Color.red())
+        em.add_field(name = "Question", value = question, inline = True)
+        em.add_field(name = "Answer", value = answer, inline = True)
+        await ctx.send(embed = em)
 
 
 def setup(bot):
