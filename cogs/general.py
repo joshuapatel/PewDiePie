@@ -221,6 +221,11 @@ class General(commands.Cog):
 
     @commands.command()
     async def feedback(self, ctx, *, message: str):
+        fbcheck = await self.bot.pool.fetchrow("SELECT * FROM fbblocked WHERE userid = $1", ctx.author.id)
+        if fbcheck != None:
+            blacklisted = discord.Embed(title = "Blacklisted", description = "You have been blacklisted from using the feedback command.", color = discord.Color.red())
+            return await ctx.send(embed = blacklisted)
+
         em = discord.Embed(color = discord.Color.blue())
         em.add_field(name = "Feedback", value = f"""
         Your feedback for {self.bot.user.name} has been submitted
