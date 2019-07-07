@@ -67,6 +67,30 @@ class Owner(commands.Cog):
         else:
             await ctx.send("No cogs were updated")
 
+    @commands.group(invoke_without_command=True)
+    async def fbblacklist(self, ctx):
+        await ctx.send("**Options:** add, remove")
+
+    @fbblacklist.command()
+    async def add(self, ctx, user: discord.User):
+        fbcheck = await self.bot.pool.fetchrow("SELECT * FROM fbblocked WHERE userid = $1", user.id)
+        if fbcheck != None:
+            return await ctx.send("This user is already blacklisted from the feedback command.")
+        
+        await self.bot.pool.execute("INSERT INTO fbblocked VALUES ($1)", user.id)
+        em = discord.Embed(title = "Blacklisted", description = "This user has been blacklisted from using the feedback command.", color = discord.Color.red())
+        await ctx.send(embed = em)
+
+    @fbblacklist.command()
+    async def remove(self, ctx, user: discord.User):
+        fbcheck = await self.bot.pool.fetchrow("SELECT * FROM fbblocked WHERE userid = $1", user.id)
+        if fbcheck == None:
+            return await ctx.send("This user is not blacklisted from the feedback command.")
+        
+        await self.bot.pool.execute("INSERT INTO fbblocked VALUES ($1)", user.id)
+        em = discord.Embed(title = "Un-Blacklisted", description = "This user has been un-blacklisted from using the feedback command.", color = discord.Color.red())
+        await ctx.send(embed = em)
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
