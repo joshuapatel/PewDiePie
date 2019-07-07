@@ -85,6 +85,13 @@ class General(commands.Cog):
         em.add_field(name = "Vote", value = f"[Vote for me](https://discordbots.org/bot/{self.bot.user.id}/vote)")
         await ctx.send(embed = em)
 
+    @commands.command()
+    async def ping(self, ctx):
+        botlat = round(self.bot.latency * 1000, 0)
+
+        em = discord.Embed(title = "Pong!", description = f":ping_pong: `{botlat}ms`", color= discord.Color.red())
+        await ctx.send(embed = em)
+
     @commands.command(aliases = ["vote"])
     async def invite(self, ctx):
         em = discord.Embed(color = discord.Color.orange())
