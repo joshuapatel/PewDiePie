@@ -279,8 +279,8 @@ class General(commands.Cog):
 
         answer = random.choice(self._8ball_responses)
         em = discord.Embed(title = "8ball", color = discord.Color.red())
-        em.add_field(name = "Question", value = question, inline = True)
-        em.add_field(name = "Answer", value = answer, inline = True)
+        em.add_field(name = "Question", value = question, inline = False)
+        em.add_field(name = "Answer", value = answer, inline = False)
         await ctx.send(embed = em)
 
 
