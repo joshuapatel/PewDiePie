@@ -87,7 +87,7 @@ class Owner(commands.Cog):
         if fbcheck == None:
             return await ctx.send("This user is not blacklisted from the feedback command.")
         
-        await self.bot.pool.execute("INSERT INTO fbblocked VALUES ($1)", user.id)
+        await self.bot.pool.execute("DELETE FROM fbblocked WHERE userid = $1", user.id)
         em = discord.Embed(title = "Un-Blacklisted", description = "This user has been un-blacklisted from using the feedback command.", color = discord.Color.red())
         await ctx.send(embed = em)
 
