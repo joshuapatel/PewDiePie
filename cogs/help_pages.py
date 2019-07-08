@@ -22,6 +22,7 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}meme", value = "Sends a random meme from one of the best meme subreddits", inline = False)
         em.add_field(name = f"{prefix}joke", value = "Sends a random joke", inline = False)
         em.add_field(name = f"{prefix}dadjoke", value = "Sends a random dad joke", inline = False)
+        em.add_field(name = f"{prefix}userinfo [@user]", value = "Gives you info about the specified user.", inline = False)
 
         return em
 
