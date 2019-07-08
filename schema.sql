@@ -75,3 +75,7 @@ CREATE TABLE IF NOT EXISTS daily (
 CREATE TABLE IF NOT EXISTS fbblocked (
     userid BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS blacklisted (
+    userid BIGINT NOT NULL
+);

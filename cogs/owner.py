@@ -72,7 +72,7 @@ class Owner(commands.Cog):
         await ctx.send("**Options:** add, remove")
 
     @fbblacklist.command()
-    async def add(self, ctx, user: discord.User):
+    async def add(self, ctx, *, user: discord.Member):
         fbcheck = await self.bot.pool.fetchrow("SELECT * FROM fbblocked WHERE userid = $1", user.id)
         if fbcheck != None:
             return await ctx.send("This user is already blacklisted from the feedback command.")
@@ -82,7 +82,7 @@ class Owner(commands.Cog):
         await ctx.send(embed = em)
 
     @fbblacklist.command()
-    async def remove(self, ctx, user: discord.User):
+    async def remove(self, ctx, *, user: discord.Member):
         fbcheck = await self.bot.pool.fetchrow("SELECT * FROM fbblocked WHERE userid = $1", user.id)
         if fbcheck == None:
             return await ctx.send("This user is not blacklisted from the feedback command.")
@@ -90,6 +90,31 @@ class Owner(commands.Cog):
         await self.bot.pool.execute("DELETE FROM fbblocked WHERE userid = $1", user.id)
         em = discord.Embed(title = "Un-Blacklisted", description = "This user has been un-blacklisted from using the feedback command.", color = discord.Color.red())
         await ctx.send(embed = em)
+
+    @commands.group(invoke_without_command=True)
+    async def blacklist(self, ctx):
+        await ctx.send("**Options:** add, remove")
+
+    @blacklist.command()
+    async def add(self, ctx, *, user: discord.Member):
+        bcheck = await self.bot.pool.fetchrow("SELECT * FROM blacklist WHERE userid = $1", user.id)
+        if bcheck != None:
+            return await ctx.send("This user is already blacklisted from the feedback command.")
+
+        await self.bot.pool.execute("INSERT INTO blacklist VALUES ($1)", user.id)
+        em = discord.Embed(title = "Blacklisted", description = "This user has been blacklisted from using commands.", color = discord.Color.red())
+        await ctx.send(embed = em)
+
+    @blacklist.command()
+    async def remove(self, ctx, *, user: discord.Member):
+        bcheck = await self.bot.pool.fetchrow("SELECT * FROM blacklist WHERE userid = $1", user.id)
+        if bcheck == None:
+            return await ctx.send("This user is not blacklisted from using commands.")
+        
+        await self.bot.pool.execute("DELETE FROM blacklist WHERE userid = $1", user.id)
+        em = discord.Embed(title = "Un-Blacklisted", description = "This user has been un-blacklisted from using commands.", color = discord.Color.red())
+        await ctx.send(embed = em)
+
 
 
 def setup(bot):
