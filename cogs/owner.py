@@ -115,6 +115,10 @@ class Owner(commands.Cog):
         em = discord.Embed(title = "Un-Blacklisted", description = "This user has been un-blacklisted from using commands.", color = discord.Color.red())
         await ctx.send(embed = em)
 
+    @commands.command()
+    async def echo(self, ctx, *, message: str):
+        await ctx.send(message)
+        await ctx.message.delete()
 
 
 def setup(bot):
