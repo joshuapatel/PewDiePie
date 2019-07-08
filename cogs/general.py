@@ -288,6 +288,36 @@ class General(commands.Cog):
         em.add_field(name = "Answer", value = answer, inline = False)
         await ctx.send(embed = em)
 
+    @commands.command()
+    @commands.guild_only()
+    async def userinfo(self, ctx, user: discord.Member = None):
+        if user is None:
+            user = ctx.author
+
+        if user.activity is None:
+            activity = None
+        else:
+            activity = user.activity.name
+
+        roles = []
+
+        if user.roles is None:
+            roles.append("None")
+        else:
+            for role in user.roles:
+                roles.append(role.name)
+
+        em = discord.Embed(title = f"Info about {user}", color = discord.Color.red())
+        em.add_field(name = "Server Unique Name", value = user.nick)
+        em.add_field(name = "Account Created", value = user.created_at.strftime("%m-%d-%Y"))
+        em.add_field(name = "Joined Server",value = user.joined_at.strftime("%m-%d-%Y"))
+        em.add_field(name = "ID", value = user.id)
+        em.add_field(name = "Status", value = user.status)
+        em.add_field(name = "Activity", value = activity)
+        em.add_field(name = "Roles", value = ", ".join(roles))
+        em.set_thumbnail(url=user.avatar_url)
+        await ctx.send(embed = em)
+
 
 def setup(bot):
     bot.add_cog(General(bot))
