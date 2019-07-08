@@ -32,11 +32,6 @@ class General(commands.Cog):
             "Outlook not so good.",
             "Very doubtful."
         )
-
-    async def cog_check(self, ctx):
-        check = await self.bot.pool.fetch("SELECT * FROM blacklist")
-        if ctx.author in check:
-            raise discord.Forbidden
             
     @commands.command()
     async def randomvid(self, ctx):
