@@ -33,6 +33,11 @@ class General(commands.Cog):
             "Very doubtful."
         )
 
+    async def cog_check(self, ctx):
+        check = await self.bot.pool.fetch("SELECT * FROM blacklist")
+        if ctx.author in check:
+            raise discord.Forbidden
+            
     @commands.command()
     async def randomvid(self, ctx):
         await ctx.channel.trigger_typing()
