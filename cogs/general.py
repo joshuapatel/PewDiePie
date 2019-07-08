@@ -307,7 +307,7 @@ class General(commands.Cog):
             for role in user.roles:
                 roles.append(role.name)
 
-        em = discord.Embed(title = f"Info about {user.name}", color = discord.Color.red())
+        em = discord.Embed(title = f"Info about {user}", color = discord.Color.red())
         em.add_field(name = "Server Unique Name", value = user.nick)
         em.add_field(name = "Account Created", value = user.created_at.strftime("%m-%d-%Y"))
         em.add_field(name = "Joined Server",value = user.joined_at.strftime("%m-%d-%Y"))
