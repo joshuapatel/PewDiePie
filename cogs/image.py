@@ -11,6 +11,7 @@ class Image(commands.Cog):
 
     @commands.command()
     async def changemymind(self, ctx, *, text: str):
+        await ctx.channel.trigger_typing()
         headers = {
             "Content-Type": "application/json",
             "Accept": "application/json"
