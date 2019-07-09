@@ -250,7 +250,7 @@ class Subscribe(commands.Cog):
 
         async def search(ch_name):
             async with aiohttp.ClientSession() as session:
-                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key=AIzaSyAmZq-bwexnPDOmtqtZVYFVFaj4uUOOnUY") as ch:
+                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key={config.ytdapi}") as ch:
                     channel = await ch.json()
 
             return channel
