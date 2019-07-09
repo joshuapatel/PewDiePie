@@ -249,9 +249,9 @@ class Subscribe(commands.Cog):
 
             return channel
 
-        if search["items"][0]["id"]["channelId"] == None:
+        try:
             chid = search["items"][0]["id"]["channelId"]
-        else:
+        except TypeError:
             em = discord.Embed(color = discord.Color.red())
             em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
             await ctx.send(embed = em)
