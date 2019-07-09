@@ -120,6 +120,19 @@ class Owner(commands.Cog):
         await ctx.send(message)
         await ctx.message.delete()
 
+    @commands.command()
+    async def delsnipe(self, ctx, * contents: str):
+        check = await self.bot.pool.fetch("SELECT * FROM snipe WHERE guild = $1 AND contents = $2", ctx.guild.id, contents)
+        if check == None:
+            await ctx.send("That deleted message is not in the snipe database.")
+            return
+
+        try:
+            await self.bot.pool.execute("DELETE FROM snipe WHERE guild = $1 AND contents = $2", ctx.guild.id, contents)
+            await ctx.send("I have deleted that message from the snipe database.")
+        except:
+            await ctx.send("An error occurred while deleting that message from the snipe database.")
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
