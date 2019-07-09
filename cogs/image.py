@@ -39,7 +39,7 @@ class Image(commands.Cog):
             async with session.get(f'https://nekobot.xyz/api/imagegen?type=trumptweet&text={text}'.replace(" ", "%20"), headers=headers) as r:
                 raw = await r.json()
                 img = raw['message']
-                await self.imggenembed(ctx, "Change My Mind", img)
+                await self.imggenembed(ctx, "Trump Tweet", img)
 
 
 def setup(bot):
