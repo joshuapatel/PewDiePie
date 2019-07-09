@@ -17,6 +17,7 @@ import config
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.bc_image = "<:bro_coin:541363630189576193>"
         self._8ball_responses = (
             "It is certain.",
             "Without a doubt.",
@@ -307,6 +308,11 @@ class General(commands.Cog):
             for role in user.roles:
                 roles.append(role.name)
 
+        try:
+            coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
+        except TypeError:
+            coins = uses = 0
+
         em = discord.Embed(title = f"Info about {user}", color = discord.Color.red())
         em.add_field(name = "Server Unique Name", value = user.nick)
         em.add_field(name = "Account Created", value = user.created_at.strftime("%m-%d-%Y"))
@@ -315,6 +321,7 @@ class General(commands.Cog):
         em.add_field(name = "Status", value = user.status)
         em.add_field(name = "Activity", value = activity)
         em.add_field(name = "Roles", value = ", ".join(roles))
+        em.add_field(name = "Economy Info", value = f"**Bro Coins:** {coins:,d} {self.bc_image}\n**Economy Uses:**{uses:,d}")
         em.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed = em)
 
