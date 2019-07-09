@@ -249,7 +249,7 @@ class Subscribe(commands.Cog):
 
             return channel
 
-        if int(search["pageInfo"]["totalResults"]) >= 1:
+        if int(search["items"][0]["id"]["channelId"]) == None:
             chid = search["items"][0]["id"]["channelId"]
         else:
             em = discord.Embed(color = discord.Color.red())
