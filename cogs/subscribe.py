@@ -249,13 +249,12 @@ class Subscribe(commands.Cog):
 
             return channel
 
-        try:
-            chid = search["items"][0]["id"]["channelId"]
-        except IndexError:
-            em = discord.Embed(color = discord.Color.red())
-            em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
-            await ctx.send(embed = em)
+        if channel["items"][0]["id"]["channelId"] is None:
+            errorem = discord.Embed(title = "Channel Not Found", description = "I couldn't find a channel with that name.", color = discord.Color.red())
+            await ctx.send(embed = errorem)
             return
+        else:
+            chid = channel["items"][0]["id"]["channelId"]
 
         base_uri_id = "https://www.googleapis.com/youtube/v3/channels"
         async with aiohttp.ClientSession() as session:
