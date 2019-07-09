@@ -328,7 +328,7 @@ class General(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def serverinfo(self, ctx):
-        coins = await self.bot.pool.fetch("SELECT * FROM ceon WHERE guildid = $1 ORDER BY coins DESC LIMIT 3")
+        coins = await self.bot.pool.fetch("SELECT * FROM econ WHERE guildid = $1 ORDER BY coins DESC LIMIT 3")
         coinstr = []
         if coins == []:
             coinstr.append("None")
