@@ -121,7 +121,7 @@ class Owner(commands.Cog):
         await ctx.message.delete()
 
     @commands.command()
-    async def delsnipe(self, ctx, * contents: str):
+    async def delsnipe(self, ctx, *, contents: str):
         check = await self.bot.pool.fetch("SELECT * FROM snipe WHERE guild = $1 AND contents = $2", ctx.guild.id, contents)
         if check == None:
             await ctx.send("That deleted message is not in the snipe database.")
