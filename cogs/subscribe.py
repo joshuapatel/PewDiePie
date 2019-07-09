@@ -249,30 +249,32 @@ class Subscribe(commands.Cog):
 
             return channel
 
-            if search["pageInfo"]["totalResults"] >= 1:
-                chid = search["items"][0]["id"]["channelId"]
-            else:
-                em = discord.Embed(color = discord.Color.red())
-                em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
-                await ctx.send(embed = em)
-                return
+        if search["pageInfo"]["totalResults"] >= 1:
+            chid = search["items"][0]["id"]["channelId"]
+        else:
+            em = discord.Embed(color = discord.Color.red())
+            em.add_field(name = "Channel Not Found", value = "Couldn't find a channel with that name.")
+            await ctx.send(embed = em)
+            return
 
-            base_uri_id = "https://www.googleapis.com/youtube/v3/channels"
+        base_uri_id = "https://www.googleapis.com/youtube/v3/channels"
+        async with aiohttp.ClientSession() as session:
             async with session.get(f"{base_uri_id}?part=snippet,contentDetails,statistics&id={chid}&key={config.ytdapi}") as ch:
                 ch = await ch.json()
             
-            ch_count = int(ch["items"][0]["statistics"]["subscriberCount"])
-            ch_name = ch["items"][0]["snippet"]["title"]
-            ch_viewcount = int(ch["items"][0]["statistics"]["viewCount"])
-            ch_vidcount = int(ch["items"][0]["statistics"]["videoCount"])
-            ch_icon = str(ch["items"][0]["snippet"]["thumbnails"]["default"]["url"])
+        ch_count = int(ch["items"][0]["statistics"]["subscriberCount"])
+        ch_name = ch["items"][0]["snippet"]["title"]
+        ch_viewcount = int(ch["items"][0]["statistics"]["viewCount"])
+        ch_vidcount = int(ch["items"][0]["statistics"]["videoCount"])
+        ch_icon = str(ch["items"][0]["snippet"]["thumbnails"]["default"]["url"])
 
-            em = discord.Embed(title = f"Info about {ch_name}", color = discord.Color.red())
-            em.add_field(name = "Link", value = f"[Click Here](https://www.youtube.com/channel/{chid})")
-            em.add_field(name = "Subcount", value = f"{ch_count:,d}")
-            em.add_field(name = "Viewcount", value = f"{ch_viewcount:,d}")
-            em.add_field(name = "Videocount", value = f"{ch_vidcount:,d}")
-            await ctx.send(embed = em)
+        em = discord.Embed(title = f"Info about {ch_name}", color = discord.Color.red())
+        em.add_field(name = "Link", value = f"[Click Here](https://www.youtube.com/channel/{chid})")
+        em.add_field(name = "Subcount", value = f"{ch_count:,d}")
+        em.add_field(name = "Viewcount", value = f"{ch_viewcount:,d}")
+        em.add_field(name = "Videocount", value = f"{ch_vidcount:,d}")
+        em.set_thumbnail(url=ch_icon)
+        await ctx.send(embed = em)
 
 
 def setup(bot):
