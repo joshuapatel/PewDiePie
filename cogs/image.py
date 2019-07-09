@@ -9,6 +9,12 @@ class Image(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def imggenembed(self, ctx, title: str, imgurl: str):
+        em = discord.Embed(title = title, color = discord.Color.red())
+        em.set_image(url=imgurl)
+        em.set_footer(text="NOTE: These commands are still in beta.")
+        await ctx.send(embed = em)
+
     @commands.command()
     async def changemymind(self, ctx, *, text: str):
         await ctx.channel.trigger_typing()
@@ -19,11 +25,8 @@ class Image(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://nekobot.xyz/api/imagegen?type=changemymind&text={text}'.replace(" ", "%20"), headers=headers) as r:
                 raw = await r.json()
-                imgurl = raw['message']
-                em = discord.Embed(title = "Change My Mind", color = discord.Color.red())
-                em.set_image(url=imgurl)
-                em.set_footer(text="NOTE: These commands are still in beta.")
-                await ctx.send(embed = em)
+                img = raw['message']
+                await self.imggenembed(ctx, "Change My Mind", img)
 
     @commands.command()
     async def trumptweet(self, ctx, *, text: str):
@@ -35,11 +38,8 @@ class Image(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://nekobot.xyz/api/imagegen?type=trumptweet&text={text}'.replace(" ", "%20"), headers=headers) as r:
                 raw = await r.json()
-                imgurl = raw['message']
-                em = discord.Embed(title = "Trump Tweet", color = discord.Color.red())
-                em.set_image(url=imgurl)
-                em.set_footer(text="NOTE: These commands are still in beta.")
-                await ctx.send(embed = em)
+                img = raw['message']
+                await self.imggenembed(ctx, "Change My Mind", img)
 
 
 def setup(bot):
