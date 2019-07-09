@@ -274,6 +274,23 @@ class Subscribe(commands.Cog):
         em.set_thumbnail(url=chinfo[4])
         await ctx.send(embed = em)
 
+    @commands.group(invoke_without_command = True)
+    @commands.is_owner()
+    async def csubgap(self, ctx):
+        await ctx.send("**Options:** start, stop")
+
+    @csubgap.command()
+    @commands.is_owner()
+    async def start(self, ctx):
+        self.subgap_task.start()
+        await ctx.send("Started subgap.")
+
+    @csubgap.command()
+    @commands.is_owner()
+    async def stop(self, ctx):
+        self.subgap_task.cancel()
+        await ctx.send("Stopped subgap.")
+
 
 def setup(bot):
     bot.add_cog(Subscribe(bot))
