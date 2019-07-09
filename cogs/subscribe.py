@@ -272,7 +272,6 @@ class Subscribe(commands.Cog):
             em.add_field(name = "Subcount", value = f"{ch_count:,d}")
             em.add_field(name = "Viewcount", value = f"{ch_viewcount:,d}")
             em.add_field(name = "Videocount", value = f"{ch_vidcount:,d}")
-            em.set_thumbnail(url=ch_icon)
             await ctx.send(embed = em)
 
 
