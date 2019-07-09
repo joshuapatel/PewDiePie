@@ -102,7 +102,13 @@ class Subscribe(commands.Cog):
 
         ch_name = ch["items"][0]["snippet"]["title"]
 
-        return (ch_name, ch_count)
+        ch_viewcount = int(ch["items"][0]["statistics"]["viewCount"])
+
+        ch_vidcount = int(ch["items"][0]["statistics"]["videoCount"])
+
+        ch_icon = str(ch["items"][0]["snippet"]["thumbnails"]["default"]["url"])
+
+        return (ch_name, ch_count, ch_viewcount, ch_vidcount, ch_icon)
 
     async def get_guild_sub(self, guild):
         youtuber = await self.bot.pool.fetchrow("SELECT first_ch, second_ch FROM sub_setup WHERE guildid = $1", guild)
@@ -240,39 +246,32 @@ class Subscribe(commands.Cog):
 
     @commands.command(aliases = ["ci"])
     async def channelinfo(self, ctx, *, channel: str):
-        async def search(ch_name):
-            base_uri = "https://www.googleapis.com/youtube/v3/search"
+        base_uri = "https://www.googleapis.com/youtube/v3/search"
 
+        async def search(ch_name):
             async with aiohttp.ClientSession() as session:
-                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key={config.ytdapi}") as ch:
+                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key=AIzaSyAmZq-bwexnPDOmtqtZVYFVFaj4uUOOnUY") as ch:
                     channel = await ch.json()
 
             return channel
 
-        if channel["items"][0]["id"]["channelId"] is None:
-            errorem = discord.Embed(title = "Channel Not Found", description = "I couldn't find a channel with that name.", color = discord.Color.red())
+        search_ch = await search(channel)
+
+        if search_ch["pageInfo"]["totalResults"] >= 1:
+            ch = search_ch["items"][0]["id"]["channelId"]
+        else:
+            errorem = discord.Embed(title = "Channel Not Found", description = "I couldn't find a channel matching that name.", color = discord.Color.red())
             await ctx.send(embed = errorem)
             return
-        else:
-            chid = channel["items"][0]["id"]["channelId"]
 
-        base_uri_id = "https://www.googleapis.com/youtube/v3/channels"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{base_uri_id}?part=snippet,contentDetails,statistics&id={chid}&key={config.ytdapi}") as ch:
-                ch = await ch.json()
-            
-        ch_count = int(ch["items"][0]["statistics"]["subscriberCount"])
-        ch_name = ch["items"][0]["snippet"]["title"]
-        ch_viewcount = int(ch["items"][0]["statistics"]["viewCount"])
-        ch_vidcount = int(ch["items"][0]["statistics"]["videoCount"])
-        ch_icon = str(ch["items"][0]["snippet"]["thumbnails"]["default"]["url"])
+        chinfo = await self.get_channel_info(ch)
 
-        em = discord.Embed(title = f"Info about {ch_name}", color = discord.Color.red())
-        em.add_field(name = "Link", value = f"[Click Here](https://www.youtube.com/channel/{chid})")
-        em.add_field(name = "Subcount", value = f"{ch_count:,d}")
-        em.add_field(name = "Viewcount", value = f"{ch_viewcount:,d}")
-        em.add_field(name = "Videocount", value = f"{ch_vidcount:,d}")
-        em.set_thumbnail(url=ch_icon)
+        em = discord.Embed(title = f"Info about {chinfo[0]}", color = discord.Color.red())
+        em.add_field(name = "Link", value = f"[Click Here](https://www.youtube.com/channel/{ch})")
+        em.add_field(name = "Subcount", value = f"{chinfo[1]:,d}")
+        em.add_field(name = "Viewcount", value = f"{chinfo[2]:,d}")
+        em.add_field(name = "Videocount", value = f"{chinfo[3]:,d}")
+        em.set_thumbnail(url=chinfo[4])
         await ctx.send(embed = em)
 
 
