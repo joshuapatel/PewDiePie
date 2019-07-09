@@ -16,7 +16,7 @@ class Image(commands.Cog):
             "Accept": "application/json"
         }
         async with aiohttp.ClientSession() as session:
-            async with session.get(f'https://nekobot.xyz/api/imagegen?type=changemymind&text={text}'.replace(" " "%20"), headers=headers) as r:
+            async with session.get(f'https://nekobot.xyz/api/imagegen?type=changemymind&text={text}'.replace(" ", "%20"), headers=headers) as r:
                 raw = await r.json()
                 imgurl = raw['message']
                 em = discord.Embed(title = "Change My Mind", color = discord.Color.red())
