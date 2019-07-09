@@ -325,6 +325,43 @@ class General(commands.Cog):
         em.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed = em)
 
+    @commands.command()
+    @commands.guild_only()
+    async def serverinfo(self, ctx):
+        coins = await self.bot.pool.fetch("SELECT * FROM ceon WHERE guildid = $1 ORDER BY coins DESC LIMIT 3")
+        coinstr = []
+        if coins == []:
+            coinstr.append("None")
+        else:
+            lbcount = 0
+            for x in coins:
+                lbcount += 1
+                try:
+                    uname = self.bot.get_user(x["userid"]).name
+                    udiscrim = self.bot.get_user(x["userid"]).discriminator
+                    complete = f"{uname}#{udiscrim}"
+                except AttributeError:
+                    complete = "User Not Found"
+
+                if len(uname) > 17:
+                    uname = uname[:-5] + "..."
+
+                ucoins = format(x["coins"], ",d")
+                coinstr.append(f"**{complete}:** {ucoins} {self.bc_image}")
+
+        roles = []
+        for role in ctx.guild.roles:
+            roles.append(role.name)
+
+        em = discord.Embed(title = f"Info about {ctx.guild.name}", color = discord.Color.red())
+        em.add_field(name = "ID", value = ctx.guild.id)
+        em.add_field(name = "Owner", value = f"{ctx.guild.owner.mention} ({ctx.guild.owner})")
+        em.add_field(name = "Region", value = ctx.guild.region)
+        em.add_field(name = "Member Count", value = ctx.guild.member_count)
+        em.add_field(name = "Roles", value = ", ".join(roles))
+        em.add_field(name = "Top 3 Economy", value = "\n".join(coinstr))
+        await ctx.send(embed = em)
+
 
 def setup(bot):
     bot.add_cog(General(bot))
