@@ -102,13 +102,7 @@ class Subscribe(commands.Cog):
 
         ch_name = ch["items"][0]["snippet"]["title"]
 
-        ch_viewcount = int(ch["items"][0]["statistics"]["viewCount"])
-
-        ch_vidcount = int(ch["items"][0]["statistics"]["videoCount"])
-
-        ch_icon = str(ch["items"][0]["snippet"]["thumbnails"]["default"]["url"])
-
-        return (ch_name, ch_count, ch_viewcount, ch_vidcount, ch_icon)
+        return (ch_name, ch_count)
 
     async def get_guild_sub(self, guild):
         youtuber = await self.bot.pool.fetchrow("SELECT first_ch, second_ch FROM sub_setup WHERE guildid = $1", guild)
@@ -243,53 +237,6 @@ class Subscribe(commands.Cog):
         em.add_field(name = second_ch[0], value = f"{second_ch[1]:,d}")
         em.add_field(name = "Leading Channel", value = sub_msg, inline = False)
         await ctx.send(embed = em)
-
-    @commands.command(aliases = ["ci"])
-    async def channelinfo(self, ctx, *, channel: str):
-        base_uri = "https://www.googleapis.com/youtube/v3/search"
-
-        async def search(ch_name):
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"{base_uri}?part=snippet&maxResults=1&q={ch_name}&type=channel&key={config.ytdapi}") as ch:
-                    channel = await ch.json()
-
-            return channel
-
-        search_ch = await search(channel)
-
-        if search_ch["pageInfo"]["totalResults"] >= 1:
-            ch = search_ch["items"][0]["id"]["channelId"]
-        else:
-            errorem = discord.Embed(title = "Channel Not Found", description = "I couldn't find a channel matching that name.", color = discord.Color.red())
-            await ctx.send(embed = errorem)
-            return
-
-        chinfo = await self.get_channel_info(ch)
-
-        em = discord.Embed(title = f"Info about {chinfo[0]}", color = discord.Color.red())
-        em.add_field(name = "Link", value = f"[Click Here](https://www.youtube.com/channel/{ch})")
-        em.add_field(name = "Subcount", value = f"{chinfo[1]:,d}")
-        em.add_field(name = "Viewcount", value = f"{chinfo[2]:,d}")
-        em.add_field(name = "Videocount", value = f"{chinfo[3]:,d}")
-        em.set_thumbnail(url=chinfo[4])
-        await ctx.send(embed = em)
-
-    @commands.group(invoke_without_command = True)
-    @commands.is_owner()
-    async def csubgap(self, ctx):
-        await ctx.send("**Options:** start, stop")
-
-    @csubgap.command()
-    @commands.is_owner()
-    async def start(self, ctx):
-        self.subgap_task.start()
-        await ctx.send("Started subgap.")
-
-    @csubgap.command()
-    @commands.is_owner()
-    async def stop(self, ctx):
-        self.subgap_task.cancel()
-        await ctx.send("Stopped subgap.")
 
 
 def setup(bot):
