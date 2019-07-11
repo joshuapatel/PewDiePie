@@ -193,10 +193,8 @@ class General(commands.Cog):
 
         if prefix is not None:
             self.bot.prefixes[ctx.guild.id] = prefix
-            await self.bot.redis.hset("prefixes", ctx.guild.id, prefix)
         else:
             self.bot.prefixes.pop(ctx.guild.id)
-            await self.bot.redis.hdel("prefixes", ctx.guild.id)
 
     @commands.command(aliases = ["memes"])
     async def meme(self, ctx):
