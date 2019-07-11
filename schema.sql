@@ -80,6 +80,6 @@ CREATE TABLE IF NOT EXISTS blacklisted (
     userid BIGINT NOT NULL
 );
 
-CREATE TABLE apikeys (
+CREATE TABLE IF NOT EXISTS apikeys (
     dankmemer TEXT NOT NULL
 );
