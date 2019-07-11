@@ -79,3 +79,7 @@ CREATE TABLE IF NOT EXISTS fbblocked (
 CREATE TABLE IF NOT EXISTS blacklisted (
     userid BIGINT NOT NULL
 );
+
+CREATE TABLE apikeys (
+    dankmemer TEXT NOT NULL
+);
