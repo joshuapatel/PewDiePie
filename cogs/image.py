@@ -7,7 +7,6 @@ import aiohttp
 import struct
 import io
 import contextlib
-import utils.BytesIO
 
 
 class Image(commands.Cog):
