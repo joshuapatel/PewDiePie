@@ -142,6 +142,39 @@ class Owner(commands.Cog):
         await self.bot.pool.execute("UPDATE apikeys SET dankmemer = $1", key)
         await ctx.send("Successfully updated the Dank Memer API key!")
 
+    @commnads.group()
+    @commands.is_owner()
+    async def patreon(self, ctx):
+        embed = discord.Embed(title = "Available Patreon Commands:", color = discord.Color.dark_teal(), description = "``p.patreon add [donator lvl] [user]")
+        await ctx.send(embed = embed)
+
+    @patreon.command()
+    @commands.is_owner()
+    async def add(self, ctx, lvl:int, *, user: discord.Member):
+        if lvl > 3:
+            await ctx.send(f"There is no lvl {lvl} supporter.")
+            return
+
+        check = await self.bot.pool.fetch("SELECT * FROM donator WHERE userid = $1", user.id)
+        if check:
+            embed = discord.Embed(title = "Negative!", color = discord.Color.red() description = f"{user.name} is already a patreon.")
+            await ctx.send(embed = embed)
+        
+        await self.bot.pool.execute("INSERT INTO donator VALUES ($1, $2)", user.id, lvl)
+        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal() description = f"Added {user.name} as a patreon.")
+        await ctx.send(embed = embed)
+
+    @patreon.command()
+    @commands.is_owner()
+    async def remove(self, ctx, *, user: discord.Member):
+        check = await self.bot.pool.fetch("SELECT * FROM donator WHERE userid = $1", user.id)
+        if not check:
+            embed = discord.Embed(title = "Negative!", color = discord.Color.red() description = f"{user.name} is not a patreon.")
+            await ctx.send(embed = embed)            
+   
+        await self.bot.pool.execute("DELETE FROM donator WHERE userid = $1", user.id)
+        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal() description = f"Removed {user.name} as a patreon.")
+        await ctx.send(embed = embed)
 
 def setup(bot):
     bot.add_cog(Owner(bot))

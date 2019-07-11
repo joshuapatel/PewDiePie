@@ -83,3 +83,8 @@ CREATE TABLE IF NOT EXISTS blacklisted (
 CREATE TABLE IF NOT EXISTS apikeys (
     dankmemer TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS donator (
+    userid BIGINT NOT NULL,
+    level BIGINT NOT NULL
+);
