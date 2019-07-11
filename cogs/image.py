@@ -41,6 +41,28 @@ class Image(commands.Cog):
                 img = raw['message']
                 await self.imggenembed(ctx, "Trump Tweet", img)
 
+    @commands.command()
+    async def triggered(self, ctx, user: discord.Member = None):
+        if user == None:
+            user = ctx.author
+
+        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        if dmapikey == None:
+            await ctx.send("The Dank Memer API key has not been set.")
+            return
+
+        await ctx.channel.trigger_typing()
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": dmapikey
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://dankmemer.services/api/trigger?avatar1={user.avatar_url}', headers=headers) as r:
+                raw = await r.json()
+                img = raw['message']
+                await self.imggenembed(ctx, "Triggered", img)
+
 
 def setup(bot):
     bot.add_cog(Image(bot))
