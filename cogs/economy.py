@@ -151,6 +151,47 @@ class Economy(commands.Cog):
 
         await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
 
+    @commands.command()
+    async def weekly(self, ctx):
+        """Weekly bonus of Bro Coins"""
+        time = await self.bot.pool.fetchval("SELECT time FROM weekly WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+        now = datetime.datetime.utcnow()
+        week = now + datetime.timedelta(days=7)
+
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
+        if not check:
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
+            await ctx.send(embed=em)
+            return
+
+        if time is not None and time > now:
+            human_time = humanize.naturaldelta(time - now)
+
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Weekly Cooldown", value=f"You must wait {human_time} until you can cash in your weekly bonus.")
+            await ctx.send(embed=em)
+            return
+
+
+        if check == 1:
+            ctg = random.randint(20000, 21600)
+
+        if check == 2:
+            ctg = random.randint(30000, 32400)
+
+        em = discord.Embed(color=discord.Colour.green())
+        em.add_field(name="Weekly", value=f"You cashed in your weekly bonus of {ctg:,d} {self.bc_image}, thanks for supporting!")
+        await ctx.send(embed=em)
+
+        if time is None:
+            await self.bot.pool.execute("INSERT INTO weekly VALUES ($1, $2, $3)", ctx.author.id, ctx.guild.id, week)
+        else:
+            await self.bot.pool.execute("UPDATE weekly SET time = $1 WHERE userid = $2 AND guildid = $3", week, ctx.author.id, ctx.guild.id)
+
+        await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
+
+
     @commands.command(aliases = ["give", "givemoney", "send", "sendmoney", "add", "addmoney"])
     async def pay(self, ctx, amount: AmountConverter, *, user: discord.Member):
         """Pays a user with a specified amount of Bro Coins"""
