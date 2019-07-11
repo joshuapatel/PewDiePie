@@ -336,7 +336,16 @@ class Economy(commands.Cog):
         if mu is None:
             mu = 0
 
-        coinchance = random.choice([True, False, True, True, False, False])
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", user.id)
+        if not check:
+            coinchance = random.choice([True, False, True, True, False, False])
+
+        if check == 1:
+            coinchance = random.choice([True, False, True, True, False, False])
+
+        if check == 2:
+            coinchance = random.choice([True, False, True, False, False])
+
         if coinchance:
             giveper = random.randint(1, 5)
             give = round(mu * float(f"0.0{giveper}"))
