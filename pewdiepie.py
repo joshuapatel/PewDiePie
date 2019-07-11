@@ -30,7 +30,7 @@ async def custom_prefix(bot, message):
     else:
         return commands.when_mentioned_or(prefix)(bot, message)
 
-extensions = ["jishaku", "cogs.functions"]
+extensions = ["jishaku", "cogs.functions", "cogs.help_pages"]
 
 for f in os.listdir("cogs"):
     if f.endswith(".py") and not f"cogs.{f[:-3]}" in extensions:
@@ -51,6 +51,15 @@ class PewDiePie(commands.AutoShardedBot):
         self.owners = set()
 
     async def on_ready(self):
+        # Owners
+        if len(self.owner_role) == 2:
+            guild = self.get_guild(self.owner_role[0])
+            role = guild.get_role(self.owner_role[1])
+            self.owners.update(r.id for r in role.members)
+        else:
+            app = await self.application_info()
+            self.owners.add(app.owner.id)
+
         if not hasattr(self, "uptime"):
             self.uptime = datetime.datetime.utcnow()
 
@@ -78,15 +87,6 @@ class PewDiePie(commands.AutoShardedBot):
 
         with open("schema.sql", "r") as schema:
             await self.pool.execute(schema.read())
-
-        # Owners
-        if len(self.owner_role) == 2:
-            guild = self.get_guild(self.owner_role[0])
-            role = guild.get_role(self.owner_role[1])
-            self.owners.update(r.id for r in role.members)
-        else:
-            app = await self.application_info()
-            self.owners.add(app.owner.id)
 
         # Prefixes
         self.default_prefixes = [
