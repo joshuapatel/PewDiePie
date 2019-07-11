@@ -122,6 +122,17 @@ class HelpPages(commands.Cog):
 
         return em
 
+    async def patreon(self, ctx):
+        em = discord.Embed(color = discord.Color.gold())
+        prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
+        em.set_author(name = "Patreon Commands")
+
+        em.add_field(name = f"{prefix}weekly", value = "Cash's in your weekly check",
+        inline = False)
+        em.set_footer(text = "To become a supporter, go [here](https://patreon.com/pdpbot)")
+
+        return em
+
 
 def setup(bot):
     bot.add_cog(HelpPages(bot))

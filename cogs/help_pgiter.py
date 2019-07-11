@@ -22,7 +22,7 @@ class Help(commands.Cog):
     async def help(self, ctx):
         pag = paginator.EmbedPaginator()
 
-        hp = ("main", "normal", "economy", "shop", "snipe", "moderation")
+        hp = ("main", "normal", "economy", "shop", "snipe", "moderation", "patreon")
 
         for p in hp:
             pag.add_page(await getattr(self.help_pages, p)(ctx))
