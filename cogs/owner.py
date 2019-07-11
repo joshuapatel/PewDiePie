@@ -133,6 +133,15 @@ class Owner(commands.Cog):
         except:
             await ctx.send("An error occurred while deleting that message from the snipe database.")
 
+    @commands.group(invoke_without_command = True)
+    async def setkey(self, ctx):
+        await ctx.send("**Options:** dankmemer")
+
+    @setkey.command()
+    async def dankmemer(self, ctx, *, key: str):
+        await self.bot.pool.execute("UPDATE apikeys SET dankmemer = $1", key)
+        await ctx.send("Successfully updated the Dank Memer API key!")
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
