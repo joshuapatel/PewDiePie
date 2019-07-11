@@ -4,6 +4,11 @@ from discord.ext import commands
 
 import aiohttp
 
+import struct
+import io
+import contextlib
+import utils.BytesIO
+
 
 class Image(commands.Cog):
     def __init__(self, bot):
@@ -59,8 +64,8 @@ class Image(commands.Cog):
         }
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://dankmemer.services/api/trigger?avatar1={user.avatar_url}', headers=headers) as r:
-                raw = await r.json()
-                await ctx.send(f"{raw}")
+                resp = await r.content.read()
+                await ctx.send(f"`{resp}`")
 
 
 def setup(bot):
