@@ -129,7 +129,7 @@ class HelpPages(commands.Cog):
 
         em.add_field(name = f"{prefix}weekly", value = "Cash's in your weekly check",
         inline = False)
-        em.set_footer(text = "To become a supporter, go [here](https://patreon.com/pdpbot)")
+        em.set_footer(text = "To become a supporter, go https://patreon.com/pdpbot")
 
         return em
 
