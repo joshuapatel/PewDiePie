@@ -157,11 +157,12 @@ class Owner(commands.Cog):
 
         check = await self.bot.pool.fetch("SELECT * FROM donator WHERE userid = $1", user.id)
         if check:
-            embed = discord.Embed(title = "Negative!", color = discord.Color.red() description = f"{user.name} is already a patreon.")
+            embed = discord.Embed(title = "Negative!", color = discord.Color.red(), description = f"{user.name} is already a patreon.")
             await ctx.send(embed = embed)
+            return
         
         await self.bot.pool.execute("INSERT INTO donator VALUES ($1, $2)", user.id, lvl)
-        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal() description = f"Added {user.name} as a patreon.")
+        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal(), description = f"Added {user.name} as a patreon.")
         await ctx.send(embed = embed)
 
     @patreon.command()
@@ -169,11 +170,12 @@ class Owner(commands.Cog):
     async def remove(self, ctx, *, user: discord.Member):
         check = await self.bot.pool.fetch("SELECT * FROM donator WHERE userid = $1", user.id)
         if not check:
-            embed = discord.Embed(title = "Negative!", color = discord.Color.red() description = f"{user.name} is not a patreon.")
-            await ctx.send(embed = embed)            
+            embed = discord.Embed(title = "Negative!", color = discord.Color.red(), description = f"{user.name} is not a patreon.")
+            await ctx.send(embed = embed)   
+            return         
    
         await self.bot.pool.execute("DELETE FROM donator WHERE userid = $1", user.id)
-        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal() description = f"Removed {user.name} as a patreon.")
+        embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal(), description = f"Removed {user.name} as a patreon.")
         await ctx.send(embed = embed)
 
 def setup(bot):
