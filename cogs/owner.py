@@ -142,10 +142,10 @@ class Owner(commands.Cog):
         await self.bot.pool.execute("UPDATE apikeys SET dankmemer = $1", key)
         await ctx.send("Successfully updated the Dank Memer API key!")
 
-    @commands.group()
+    @commands.group(invoke_without_command = True)
     @commands.is_owner()
     async def patreon(self, ctx):
-        embed = discord.Embed(title = "Available Patreon Commands:", color = discord.Color.dark_teal(), description = "``p.patreon add [donator lvl] [user]")
+        embed = discord.Embed(title = "Available Patreon Commands:", color = discord.Color.dark_teal(), description = "``p.patreon add [donator lvl] [user]`` \n\n ``p.patreon remove [user]``")
         await ctx.send(embed = embed)
 
     @patreon.command()
