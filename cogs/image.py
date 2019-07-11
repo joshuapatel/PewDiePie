@@ -60,8 +60,7 @@ class Image(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://dankmemer.services/api/trigger?avatar1={user.avatar_url}', headers=headers) as r:
                 raw = await r.json()
-                img = raw['message']
-                await self.imggenembed(ctx, "Triggered", img)
+                await ctx.send(f"{raw}")
 
 
 def setup(bot):
