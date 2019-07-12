@@ -127,11 +127,11 @@ class HelpPages(commands.Cog):
         prefix = ctx.prefix.replace(self.bot.user.mention, f"@{self.bot.user.name}")
         em.set_author(name = "Patreon Commands")
         
-        em.add_field(name = f"{prefix}america [text]", value = "MURRRRICA!", inline = False)
+        em.add_field(name = f"{prefix}america [@user]", value = "MURRRRICA!", inline = False)
         em.add_field(name = f"{prefix}changemymind [text]", value = "PewDiePie is awesome, change my mind.", inline = False)
         em.add_field(name = f"{prefix}salty [@user]", value = "SALTYYYY", inline = False)
         em.add_field(name = f"{prefix}triggered [@user]", value = "U mad bro?", inline = False)
-        em.add_field(name = f"{prefix}trumptweet [@user]", value = "~~#Trump2020~~", inline = False)
+        em.add_field(name = f"{prefix}trumptweet [text]", value = "~~#Trump2020~~", inline = False)
         em.add_field(name = f"{prefix}wanted [@user]", value = "This down aint' big enough for the two of us 🔫", inline = False)
         em.add_field(name = f"{prefix}weekly", value = "Cash's in your weekly check", inline = False)
         em.set_footer(text = "To become a supporter, go https://patreon.com/pdpbot")
