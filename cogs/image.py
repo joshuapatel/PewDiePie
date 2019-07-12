@@ -7,6 +7,7 @@ import aiohttp
 import struct
 import io
 import contextlib
+import io.BytesIO
 
 
 class Image(commands.Cog):
@@ -64,7 +65,9 @@ class Image(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get(f'https://dankmemer.services/api/trigger?avatar1={user.avatar_url}', headers=headers) as r:
                 resp = await r.content.read()
-                await ctx.send(f"`{resp}`")
+                b = io.BytesIO(resp)
+                f = discord.File(b, filename="triggered.jpg")
+                await ctx.send(file=f)
 
 
 def setup(bot):
