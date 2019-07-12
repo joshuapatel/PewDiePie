@@ -66,7 +66,7 @@ class Image(commands.Cog):
             async with session.get(f'https://dankmemer.services/api/trigger?avatar1={user.avatar_url}', headers=headers) as r:
                 resp = await r.content.read()
                 b = io.BytesIO(resp)
-                f = discord.File(b, filename="triggered.jpg")
+                f = discord.File(b, filename="triggered.gif")
                 await ctx.send(file=f)
 
 
