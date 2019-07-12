@@ -14,14 +14,7 @@ class Image(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def cog_check(self, ctx):
-        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
-        if not check:
-            em = discord.Embed(color=discord.Color.dark_teal())
-            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
-            await ctx.send(embed=em)
-            return
-            
+
     async def imggenembed(self, ctx, title: str, imgurl: str):
         em = discord.Embed(title = title, color = discord.Color.red())
         em.set_image(url=imgurl)
@@ -30,6 +23,13 @@ class Image(commands.Cog):
 
     @commands.command()
     async def changemymind(self, ctx, *, text: str):
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
+        if not check:
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
+            await ctx.send(embed=em)
+            return
+
         await ctx.channel.trigger_typing()
         headers = {
             "Content-Type": "application/json",
@@ -43,6 +43,13 @@ class Image(commands.Cog):
 
     @commands.command()
     async def trumptweet(self, ctx, *, text: str):
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
+        if not check:
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
+            await ctx.send(embed=em)
+            return
+
         await ctx.channel.trigger_typing()
         headers = {
             "Content-Type": "application/json",
@@ -56,6 +63,13 @@ class Image(commands.Cog):
 
     @commands.command()
     async def triggered(self, ctx, user: discord.Member = None):
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
+        if not check:
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
+            await ctx.send(embed=em)
+            return
+            
         if user == None:
             user = ctx.author
 
