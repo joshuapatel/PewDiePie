@@ -130,16 +130,6 @@ class Economy(commands.Cog):
             await ctx.send(embed=em)
             return
 
-        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
-        if not check:
-            ctg = random.randint(4500, 10000)
-
-        if check == 1:
-            ctg = random.randint(5625, 12500)
-
-        if check == 2:
-            ctg = random.randint(6750, 15000)
-
         em = discord.Embed(color=discord.Colour.green())
         em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg:,d} {self.bc_image}")
         await ctx.send(embed=em)
@@ -178,7 +168,10 @@ class Economy(commands.Cog):
             ctg = random.randint(20000, 21600)
 
         if check == 2:
-            ctg = random.randint(30000, 32400)
+            ctg = random.randint(25000, 27400)
+
+        if check == 3:
+            ctg = random.randint(37500, 40500)
 
         em = discord.Embed(color=discord.Colour.green())
         em.add_field(name="Weekly", value=f"You cashed in your weekly bonus of {ctg:,d} {self.bc_image}, thanks for supporting!")
