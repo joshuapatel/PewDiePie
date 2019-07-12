@@ -43,6 +43,9 @@ class ErrorHandler(commands.Cog, name="Error Handler"):
                 except:
                     pass
 
+        if isinstance(error, commands.CheckFailure):
+            return
+
         if isinstance(error, commands.CommandNotFound):
             return
 
