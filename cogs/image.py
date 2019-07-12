@@ -178,7 +178,7 @@ class Image(commands.Cog):
             async with session.get(f'https://dankmemer.services/api/wanted?avatar1={user.avatar_url}', headers=headers) as r:
                 resp = await r.content.read()
                 b = io.BytesIO(resp)
-                f = discord.File(b, filename="salty.gif")
+                f = discord.File(b, filename="salty.png")
                 await ctx.send(file=f)
 
 
