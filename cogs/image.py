@@ -151,6 +151,36 @@ class Image(commands.Cog):
                 f = discord.File(b, filename="salty.gif")
                 await ctx.send(file=f)
 
+    @commands.command()
+    async def wanted(self, ctx, user: discord.Member = None):
+        check = await self.bot.pool.fetchval("SELECT level FROM donator WHERE userid = $1", ctx.author.id)
+        if not check:
+            em = discord.Embed(color=discord.Color.dark_teal())
+            em.add_field(name="Donator Command", value=f"This is a patreon only command. To become a supporter, go [here](https://patreon.com/pdpbot).")
+            await ctx.send(embed=em)
+            return
+            
+        if user == None:
+            user = ctx.author
+
+        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        if dmapikey == None:
+            await ctx.send("The Dank Memer API key has not been set.")
+            return
+
+        await ctx.channel.trigger_typing()
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": dmapikey
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://dankmemer.services/api/wanted?avatar1={user.avatar_url}', headers=headers) as r:
+                resp = await r.content.read()
+                b = io.BytesIO(resp)
+                f = discord.File(b, filename="salty.gif")
+                await ctx.send(file=f)
+
 
 def setup(bot):
     bot.add_cog(Image(bot))
