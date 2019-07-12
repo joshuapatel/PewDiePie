@@ -338,7 +338,7 @@ class Economy(commands.Cog):
         if check == 1:
             coinchance = random.choice([True, False, True, True, False, False])
 
-        if check == 2 or == 3:
+        if check == 2 or 3:
             coinchance = random.choice([True, False, True, False, False])
 
         if coinchance:
