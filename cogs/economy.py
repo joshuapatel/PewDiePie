@@ -130,6 +130,8 @@ class Economy(commands.Cog):
             await ctx.send(embed=em)
             return
 
+        ctg = random.randint(4500, 10000)
+
         em = discord.Embed(color=discord.Colour.green())
         em.add_field(name="Daily", value=f"You cashed in your daily bonus of {ctg:,d} {self.bc_image}")
         await ctx.send(embed=em)
