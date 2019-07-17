@@ -310,7 +310,7 @@ class General(commands.Cog):
         em.add_field(name = "ID", value = user.id)
         em.add_field(name = "Status", value = user.status)
         em.add_field(name = "Activity", value = activity)
-        em.add_field(name = "Roles", value = f"{', '.join([r.mention for r in user.roles if not r.is_default()])}")
+        em.add_field(name = "Roles", value = f"{', '.join([r.mention for r in user.roles])}")
         em.add_field(name = "Economy Info", value = f"**Bro Coins:** {coins:,d} {self.bc_image}\n**Economy Uses:** {uses:,d}")
         em.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed = em)
