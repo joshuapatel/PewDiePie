@@ -287,9 +287,9 @@ class General(commands.Cog):
         em.add_field(name = "Answer", value = answer, inline = False)
         await ctx.send(embed = em)
 
-    @commands.command()
+    @commands.command(aliases = ["ui"])
     @commands.guild_only()
-    async def userinfo(self, ctx, user: discord.Member = None):
+    async def userinfo(self, ctx, *, user: discord.Member = None):
         if user is None:
             user = ctx.author
 
