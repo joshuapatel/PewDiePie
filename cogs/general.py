@@ -287,9 +287,9 @@ class General(commands.Cog):
         em.add_field(name = "Answer", value = answer, inline = False)
         await ctx.send(embed = em)
 
-    @commands.command(aliases = ["ui"])
+    @commands.command()
     @commands.guild_only()
-    async def userinfo(self, ctx, *, user: discord.Member = None):
+    async def userinfo(self, ctx, user: discord.Member = None):
         if user is None:
             user = ctx.author
 
@@ -297,6 +297,14 @@ class General(commands.Cog):
             activity = None
         else:
             activity = user.activity.name
+
+        roles = []
+
+        if user.roles is None:
+            roles.append("None")
+        else:
+            for role in user.roles:
+                roles.append(role.name)
 
         try:
             coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
@@ -310,10 +318,8 @@ class General(commands.Cog):
         em.add_field(name = "ID", value = user.id)
         em.add_field(name = "Status", value = user.status)
         em.add_field(name = "Activity", value = activity)
-        em.add_field(name = "Roles", value = f"{', '.join([r.mention for r in user.roles])}")
-        em.add_field(name = "Economy Info", value = ( "​" ), inline = False)
-        em.add_field(name = "Bro Coins", value = f"{coins:,d} {self.bc_image}")
-        em.add_field(name = "Economy Uses", value = f"{uses:,d}")
+        em.add_field(name = "Roles", value = ", ".join(roles))
+        em.add_field(name = "Economy Info", value = f"**Bro Coins:** {coins:,d} {self.bc_image}\n**Economy Uses:** {uses:,d}")
         em.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed = em)
 
