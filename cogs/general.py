@@ -311,7 +311,6 @@ class General(commands.Cog):
         em.add_field(name = "Status", value = user.status)
         em.add_field(name = "Activity", value = activity)
         em.add_field(name = "Roles", value = f"{', '.join([r.mention for r in user.roles])}")
-        em.add_field(name = ( "​" ), value = ( "​" ), inline = False)
         em.add_field(name = "Economy Info", value = ( "​" ), inline = False)
         em.add_field(name = "Bro Coins", value = f"{coins:,d} {self.bc_image}")
         em.add_field(name = "Economy Uses", value = f"{uses:,d}")
