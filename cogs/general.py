@@ -298,14 +298,6 @@ class General(commands.Cog):
         else:
             activity = user.activity.name
 
-        roles = []
-
-        if user.roles is None:
-            roles.append("None")
-        else:
-            for role in user.roles:
-                roles.append(role.name)
-
         try:
             coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", user.id, ctx.guild.id)
         except TypeError:
@@ -318,7 +310,7 @@ class General(commands.Cog):
         em.add_field(name = "ID", value = user.id)
         em.add_field(name = "Status", value = user.status)
         em.add_field(name = "Activity", value = activity)
-        em.add_field(name = "Roles", value = ", ".join(roles))
+        em.add_field(name = "Roles", value = f"{', '.join([r.mention for r in member.roles if not r.is_default()])}")
         em.add_field(name = "Economy Info", value = f"**Bro Coins:** {coins:,d} {self.bc_image}\n**Economy Uses:** {uses:,d}")
         em.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed = em)
