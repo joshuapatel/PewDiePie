@@ -361,6 +361,32 @@ class General(commands.Cog):
         em.add_field(name = "Top 3 Economy", value = "\n".join(coinstr))
         await ctx.send(embed = em)
 
+    @commands.command()
+    async def weather(self, ctx, *, cityname: str):
+        owmapikey = await self.bot.pool.fetchval("SELECT openweathermap FROM apikeys")
+        if owmapikey == None:
+            await ctx.send("The OpenWeatherMap API key has not been set.")
+            return
+
+        citynamefinal = cityname.replace(" ", "%20")
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'http://api.openweathermap.org/data/2.5/weather?appid={owmapikey}&q={citynamefinal}&units=imperial') as r:
+                raw = await r.json()
+                if raw['cod'] == "404":
+                    em = discord.Embed(title = "City Not Found", description = "That city was not found.", color = discord.Color.red())
+                    await ctx.send(embed = em)
+                    return
+
+                embed = discord.Embed(title = f"Weather for {raw['name']}", description = f"{raw['weather'][0]['main']} **|** {raw['weather'][0]['description']}", color = discord.Color.red())
+                embed.add_field(name = "Coordinates", value = f"**Longitude:** {raw['coord']['lon']}, **Latitude:** {raw['coord']['lat']}")
+                embed.add_field(name = "Country", value = raw['sys']['country'])
+                embed.add_field(name = "Temperature", value = f"{raw['main']['temp']} °F (Min: {raw['main']['temp_min']} °F, Max: {raw['main']['temp_max']} °F)")
+                embed.add_field(name = "Humidity", value = f"{raw['main']['humidity']}%")
+                embed.add_field(name = "Wind Speed", value = f"{raw['wind']['speed']} MPH")
+                embed.add_field(name = "Pressure", value = f"{raw['main']['pressure']}")
+                await ctx.send(embed = embed)
+
 
 def setup(bot):
     bot.add_cog(General(bot))
