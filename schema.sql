@@ -95,3 +95,12 @@ CREATE TABLE IF NOT EXISTS donator (
     userid BIGINT NOT NULL,
     level BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS polls (
+    guildid BIGINT NOT NULL,
+    channelid BIGINT NOT NULL,
+    messageid BIGINT NOT NULL,
+    executorid BIGINT NOT NULL,
+    polltext TEXT NOT NULL,
+    pollid TEXT NOT NULL
+);
