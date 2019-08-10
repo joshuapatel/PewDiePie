@@ -394,7 +394,7 @@ class General(commands.Cog):
         randomid = secrets.token_urlsafe(nbytes)
         try:
             embed = discord.Embed(title = "Poll", description = polltext, color = discord.Color.red())
-            embed.set_footer(text = f"Created by {ctx.author} | To end the poll use +endpoll {randomid}")
+            embed.set_footer(text = f"Created by {ctx.author} | To end the poll use p.endpoll {randomid}")
             msg = await ctx.send(embed = embed)
             await msg.add_reaction("👍")
             await msg.add_reaction("👎")
