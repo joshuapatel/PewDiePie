@@ -8,6 +8,7 @@ import aiohttp
 import random
 import datetime
 import textwrap
+import secrets
 # -> Configuration
 import sys
 sys.path.append("../")
@@ -386,6 +387,49 @@ class General(commands.Cog):
                 embed.add_field(name = "Wind Speed", value = f"{raw['wind']['speed']} MPH")
                 embed.add_field(name = "Pressure", value = f"{raw['main']['pressure']}")
                 await ctx.send(embed = embed)
+
+    @commands.command()
+    async def poll(self, ctx, *, polltext: str):
+        nbytes = 7
+        randomid = secrets.token_urlsafe(nbytes)
+        try:
+            embed = discord.Embed(title = "Poll", description = polltext, color = discord.Color.red())
+            embed.set_footer(text = f"Created by {ctx.author} | To end the poll use +endpoll {randomid}")
+            msg = await ctx.send(embed = embed)
+            await msg.add_reaction("👍")
+            await msg.add_reaction("👎")
+            await self.bot.pool.execute("INSERT INTO polls VALUES ($1, $2, $3, $4, $5, $6)", ctx.guild.id, ctx.channel.id, msg.id, ctx.author.id, polltext, randomid)
+        except discord.Forbidden:
+            return
+
+    @commands.command()
+    async def endpoll(self, ctx, pollid: str):
+        check = await self.bot.pool.fetchrow("SELECT * FROM polls WHERE guildid = $1 AND pollid = $2", ctx.guild.id, pollid)
+        if check == None:
+            return await ctx.send("I couldn't find a poll with that id in this guild.")
+
+        if check["executorid"] != ctx.author.id:
+            return await ctx.send("Only the Poll Creator can end that poll.")
+
+        embed = discord.Embed(title = "Poll", description = "**POLL ENDED**", color = discord.Color.red())
+
+        channel = self.bot.get_channel(check["channelid"])
+        if channel == None:
+            await self.bot.pool.execute("DELETE FROM polls WHERE guildid = $1 AND pollid = $2", ctx.guild.id, pollid)
+            await ctx.send("I have ended that poll.")
+            return
+
+        msg = check["messageid"]
+
+        pollmsg = await channel.fetch_message(msg)
+        if pollmsg == None:
+            await self.bot.pool.execute("DELETE FROM polls WHERE guildid = $1 AND pollid = $2", ctx.guild.id, pollid)
+            await ctx.send("I have ended that poll.")
+            return
+
+        await pollmsg.edit(embed = embed)
+        await self.bot.pool.execute("DELETE FROM polls WHERE guildid = $1 AND pollid = $2", ctx.guild.id, pollid)
+        await ctx.send("I have ended that poll.")
 
 
 def setup(bot):
