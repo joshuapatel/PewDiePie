@@ -44,7 +44,7 @@ class Challenge(commands.Cog):
 
     @commands.group(invoke_without_command = True)
     async def challenge(self, ctx):
-        challenges = await self.bot.pool.fetch("SELECT challengename, challengeid FROM challenges")
+        challenges = await self.bot.pool.fetch("SELECT challengename, challengetype ,challengeid FROM challenges")
 
         try:
             challenges = random.choice(challenges)
