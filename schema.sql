@@ -104,3 +104,9 @@ CREATE TABLE IF NOT EXISTS polls (
     polltext TEXT NOT NULL,
     pollid TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS challenges (
+    challengename TEXT NOT NULL,
+    challengeid SERIAL PRIMARY KEY,
+    challengetype TEXT NOT NULL,
+);
