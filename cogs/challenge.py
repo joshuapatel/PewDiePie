@@ -60,7 +60,7 @@ class Challenge(commands.Cog):
 
     @challenge.command()
     async def easy(self, ctx):
-        challenges = await self.bot.pool.fetch("SELECT challengename, challengeid FROM challenges WHERE challengetype = $1", "Easy")
+        challenges = await self.bot.pool.fetch("SELECT challengename, challengetype ,challengeid FROM challenges WHERE challengetype = $1", "Easy")
 
         try:
             challenges = random.choice(challenges)
@@ -76,7 +76,7 @@ class Challenge(commands.Cog):
 
     @challenge.command()
     async def medium(self, ctx):
-        challenges = await self.bot.pool.fetch("SELECT challengename, challengeid FROM challenges WHERE challengetype = $1", "Medium")
+        challenges = await self.bot.pool.fetch("SELECT challengename, challengetype ,challengeid FROM challenges WHERE challengetype = $1", "Medium")
 
         try:
             challenges = random.choice(challenges)
@@ -92,7 +92,7 @@ class Challenge(commands.Cog):
 
     @challenge.command()
     async def hard(self, ctx):
-        challenges = await self.bot.pool.fetch("SELECT challengename, challengeid FROM challenges WHERE challengetype = $1", "Hard")
+        challenges = await self.bot.pool.fetch("SELECT challengename, challengetype ,challengeid FROM challenges WHERE challengetype = $1", "Hard")
 
         try:
             challenges = random.choice(challenges)
