@@ -18,7 +18,7 @@ class Challenge(commands.Cog):
     @mchallenge.command()
     @commands.is_owner()
     async def add(self, ctx, type: str, *, text: str):
-        if(type != "Easy" or "Medium" or "Hard"):
+        if type not in ["Easy", "Medium", "Hard"]:
             return await ctx.send("That is not a valid challenge type.")
 
         check = await self.bot.pool.fetchrow("SELECT * FROM challenges WHERE challengename = $1", text)
