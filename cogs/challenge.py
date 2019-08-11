@@ -21,7 +21,7 @@ class Challenge(commands.Cog):
         if(type != "Easy" and "Medium" and "Hard"):
             return await ctx.send("That is not a valid challenge type.")
 
-        check = await self.bot.pool.fetchrow("SELECT * FROM challenges WHERE name = $1", text)
+        check = await self.bot.pool.fetchrow("SELECT * FROM challenges WHERE challengename = $1", text)
 
         if check != None:
             return await ctx.send("That challenge is already in the database.")
@@ -33,27 +33,27 @@ class Challenge(commands.Cog):
     @mchallenge.command()
     @commands.is_owner()
     async def remove(self, ctx, cid: int):
-        check = await self.bot.pool.fetchrow("SELECT * FROM challenges WHERE id = $1", cid)
+        check = await self.bot.pool.fetchrow("SELECT * FROM challenges WHERE challengeid = $1", cid)
 
         if check == None:
             return await ctx.send("That challenge is not in the database.")
         
-        await self.bot.pool.execute("DELETE FROM challenges WHERE id = $1", cid)
+        await self.bot.pool.execute("DELETE FROM challenges WHERE challengeid = $1", cid)
         em = discord.Embed(title = "Challenge", description = "Challenge Removed.", color = discord.Color.red())
         await ctx.send(embed = em)
 
     @commands.group(invoke_without_command = True)
     async def challenge(self, ctx):
-        challenges = await self.bot.pool.fetch("SELECT name, id FROM challenges")
+        challenges = await self.bot.pool.fetch("SELECT challengename, challengeid FROM challenges")
 
         try:
             challenges = random.choice(challenges)
         except IndexError:
             return await ctx.send("There aren't any challenges in the database.")
 
-        ctext = challenges['name']
-        ctype = challenges['type']
-        cid = challenges['id']
+        ctext = challenges['challengename']
+        ctype = challenges['challengetype']
+        cid = challenges['challengeid']
 
         em = discord.Embed(title = f"Challenge #{cid}", description = f"**{ctype}:** {ctext}", color = discord.Color.red())
         await ctx.send(embed = em)
