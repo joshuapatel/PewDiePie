@@ -27,7 +27,8 @@ class Challenge(commands.Cog):
             return await ctx.send("That challenge is already in the database.")
         
         await self.bot.pool.execute("INSERT INTO challenges VALUES ($1, $2)", text, type)
-        em = discord.Embed(title = "Challenge", description = "Challenge Added!", color = discord.Color.red())
+        cid = await self.bot.pool.fetchval(f"SELECT challengeid FROM challenges WHERE challengename = $1 AND challengetype = $2", text, type)
+        em = discord.Embed(title = "Challenge", description = f"Challenge Added! (Challenge #{cid})", color = discord.Color.red())
         await ctx.send(embed = em)
 
     @mchallenge.command()
