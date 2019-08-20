@@ -499,7 +499,7 @@ class Economy(commands.Cog):
             embed=discord.Embed(title=f"{member}", colour=discord.Colour.dark_teal())
             embed.set_thumbnail(url=member.avatar_url_as(static_format="png"))
             embed.add_field(name="Level", value="0")
-            embed.add_field(name="Coins", value="0")
+            embed.add_field(name="XP", value="0")
             await ctx.send(embed=embed)
         else:
             embed=discord.Embed(title=f"{member}", colour=discord.Colour.dark_teal())
