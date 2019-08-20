@@ -84,7 +84,7 @@ class Economy(commands.Cog):
     async def lvl_up(self, user):
         cur_xp = user['xp']
         cur_lvl = user['lvl']
-        if cur_xp == cur_lvl * 12:
+        if cur_xp == cur_lvl * 20:
             await self.bot.pool.execute("UPDATE leveling SET lvl = $1, xp = $2 WHERE userid = $3 AND guildid = $4", cur_lvl + 1, 0, user['userid'], user['guildid'])
             return True
         else:
