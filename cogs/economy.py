@@ -533,25 +533,25 @@ class Economy(commands.Cog):
     @commands.has_permissions(administrator = True)       
     @leveling.command()
     async def on(self, ctx):
-        on = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if on is False:
-            embed = discord.Embed(title = "Levling is already on!", colour = discord.Colour.dark_teal())
+        on = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if on is True:
+            embed = discord.Embed(title = "Leveling is already on!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
         else:
             await self.bot.pool.execute("UPDATE leveling SET ison = True WHERE guildid = $1", ctx.guild.id)
-            embed = discord.Embed(title = "Levling is now on!", colour = discord.Colour.dark_teal())
+            embed = discord.Embed(title = "Leveling is now on!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
 
     @commands.has_permissions(administrator = True)
     @leveling.command()
     async def off(self, ctx):
-        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if off is True:
-            embed = discord.Embed(title = "Levling is already off!", colour = discord.Colour.dark_teal())
+        off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if off is False:
+            embed = discord.Embed(title = "Leveling is already off!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
         else:
-            await self.bot.pool.execute("UPDATE leveling SET ison = False WHERE guildid = ctx.guild.id")
-            embed = discord.Embed(title = "Levling is now off!", colour = discord.Colour.dark_teal())
+            await self.bot.pool.execute("UPDATE leveling SET ison = False WHERE guildid = $1", ctx.guild.id)
+            embed = discord.Embed(title = "Leveling is now off!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
 
 def setup(bot):
