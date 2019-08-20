@@ -110,3 +110,16 @@ CREATE TABLE IF NOT EXISTS challenges (
     challengetype TEXT NOT NULL,
     challengeid SERIAL PRIMARY KEY
 );
+
+CREATE TABLE IF NOT EXISTS coinpermin (
+    userid BIGINT NOT NULL,
+    guildid BIGINT NOT NULL,
+    time TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS economy (
+    userid BIGINT NOT NULL,
+    guildid BIGINT NOT NULL,
+    lvl BIGINT NOT NULL,
+    xp BIGINT NOT NULL
+);
