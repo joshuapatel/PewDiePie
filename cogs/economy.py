@@ -538,7 +538,7 @@ class Economy(commands.Cog):
             embed = discord.Embed(title = "Levling is already on!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
         else:
-            await self.bot.pool.execute("UPDATE leveling SET ison = True WHERE guildid = ctx.guild.id")
+            await self.bot.pool.execute("UPDATE leveling SET ison = True WHERE guildid = $1", ctx.guild.id)
             embed = discord.Embed(title = "Levling is now on!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
 
