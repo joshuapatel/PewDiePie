@@ -56,7 +56,7 @@ class Economy(commands.Cog):
         if message.author.bot:
             return
 
-        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
         if off:
             return
 
@@ -534,7 +534,7 @@ class Economy(commands.Cog):
     @leveling.command()
     async def on(self, ctx):
         on = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if on is True:
+        if on is False:
             embed = discord.Embed(title = "Levling is already on!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
         else:
@@ -546,7 +546,7 @@ class Economy(commands.Cog):
     @leveling.command()
     async def off(self, ctx):
         off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if off is False:
+        if off is True:
             embed = discord.Embed(title = "Levling is already off!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
         else:
