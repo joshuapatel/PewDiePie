@@ -55,7 +55,11 @@ class Economy(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        
+
+        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if off:
+            return
+
         user = await self.bot.pool.fetch("SELECT * FROM leveling WHERE userid = $1 AND guildid = $2", message.author.id, message.guild.id)
         if not user:
             await self.bot.pool.execute("INSERT INTO leveling VALUES ($1, $2, 1, 0)", message.author.id, message.guild.id)
@@ -77,8 +81,12 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("UPDATE leveling SET xp = xp + $1 WHERE userid = $2 AND guildid = $3", ctg, message.author.id, message.guild.id)
                 
         if await self.lvl_up(user):
-            embed=discord.Embed(colour=discord.Colour.dark_teal(), description=f"{message.author} is now level {user['lvl'] + 1}", timestamp=datetime.datetime.utcnow())
-            await message.channel.send(embed=embed)
+            ison = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
+            if ison is False:
+                return
+            else:
+                embed=discord.Embed(colour=discord.Colour.dark_teal(), description=f"{message.author} is now level {user['lvl'] + 1}", timestamp=datetime.datetime.utcnow())
+                await message.channel.send(embed=embed)
 
     @commands.Cog.listener()
     async def lvl_up(self, user):
@@ -493,7 +501,13 @@ class Economy(commands.Cog):
     async def rank(self, ctx, *, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        
+
+        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if off:
+            embed = discord.Embed(title = "Levling is currently off for this server.", colour = discord.Colour.dark_teal())
+            await ctx.send(embed = embed)
+            return
+
         user = await self.bot.pool.fetch("SELECT * FROM leveling WHERE userid = $1 AND guildid = $2", member.id, ctx.guild.id)
         if not user:
             embed=discord.Embed(title=f"{member}", colour=discord.Colour.dark_teal())
@@ -507,6 +521,38 @@ class Economy(commands.Cog):
             embed.add_field(name="Level", value=user[0]['lvl'])
             embed.add_field(name="XP", value=user[0]['xp'])
             await ctx.send(embed=embed)
+
+    @commands.has_permissions(administrator = True)       
+    @commands.group(invoke_without_command = True)
+    async def leveling(self, ctx):
+        embed = discord.Embed(colour = discord.Colour.dark_teal())
+        embed.add_field(name = "p.leveling on", value = "Turns Leveling on")
+        embed.add_field(name = "p.leveling off", value = "Turns Leveling off")
+        await ctx.send(embed = embed)
+
+    @commands.has_permissions(administrator = True)       
+    @leveling.command()
+    async def on(self, ctx):
+        on = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if on:
+            embed = discord.Embed(title = "Levling is already on!", colour = discord.Colour.dark_teal())
+            await ctx.send(embed = embed)
+        else:
+            await self.bot.pool.execute("UPDATE leveling SET ison = True WHERE guildid = ctx.guild.id")
+            embed = discord.Embed(title = "Levling is now on!", colour = discord.Colour.dark_teal())
+            await ctx.send(embed = embed)
+
+    @commands.has_permissions(administrator = True)
+    @leveling.command()
+    async def off(self, ctx):
+        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
+        if off:
+            embed = discord.Embed(title = "Levling is already off!", colour = discord.Colour.dark_teal())
+            await ctx.send(embed = embed)
+        else:
+            await self.bot.pool.execute("UPDATE leveling SET ison = False WHERE guildid = ctx.guild.id")
+            embed = discord.Embed(title = "Levling is now off!", colour = discord.Colour.dark_teal())
+            await ctx.send(embed = embed)
 
 def setup(bot):
     bot.add_cog(Economy(bot))

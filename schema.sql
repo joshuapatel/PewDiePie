@@ -121,5 +121,6 @@ CREATE TABLE IF NOT EXISTS leveling (
     userid BIGINT NOT NULL,
     guildid BIGINT NOT NULL,
     lvl BIGINT NOT NULL,
-    xp BIGINT NOT NULL
+    xp BIGINT NOT NULL,
+    ison BOOLEAN DEFAULT True NOT NULL
 );
