@@ -56,8 +56,8 @@ class Economy(commands.Cog):
         if message.author.bot:
             return
 
-        off = await self.bot.pool.fetch("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
-        if off:
+        off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
+        if off is False:
             return
 
         user = await self.bot.pool.fetch("SELECT * FROM leveling WHERE userid = $1 AND guildid = $2", message.author.id, message.guild.id)
