@@ -503,7 +503,7 @@ class Economy(commands.Cog):
             member = ctx.author
 
         off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if off:
+        if off is False:
             embed = discord.Embed(title = "Levling is currently off for this server.", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
             return
