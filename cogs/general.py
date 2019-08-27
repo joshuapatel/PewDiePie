@@ -354,7 +354,7 @@ class General(commands.Cog):
 
         em = discord.Embed(title = f"Info about {ctx.guild.name}", color = discord.Color.red())
         em.add_field(name = "ID", value = ctx.guild.id)
-        em.add_field(name = "Owner", value = f"{ctx.guild.owner.mention} ({ctx.guild.owner})")
+        em.add_field(name = "Owner", value = f"{ctx.guild.owner}")
         em.add_field(name = "Created At", value = ctx.guild.created_at.strftime("%m-%d-%Y"))
         em.add_field(name = "Region", value = ctx.guild.region)
         em.add_field(name = "Member Count", value = ctx.guild.member_count)
