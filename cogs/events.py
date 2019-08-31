@@ -91,13 +91,13 @@ class Events(commands.Cog):
 
     @tasks.loop(seconds = 30)
     async def autostatus(self):
-            watching = ["Pew News", f"for p.help in {len(self.bot.guilds):,d} servers"]
+            watching = ["Minecraft Videos", f"for p.help in {len(self.bot.guilds):,d} servers"]
 
             for w in watching:
                 await self.bot.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = w))
                 await asyncio.sleep(30)
 
-            await self.bot.change_presence(activity = discord.Game(name = "Banning T-Series subscribers"))
+            await self.bot.change_presence(activity = discord.Game(name = "with NEW Challenges!"))
 
     @autostatus.before_loop
     async def before_autostatus(self):
