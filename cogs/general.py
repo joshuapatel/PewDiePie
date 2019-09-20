@@ -431,6 +431,18 @@ class General(commands.Cog):
         await self.bot.pool.execute("DELETE FROM polls WHERE guildid = $1 AND pollid = $2", ctx.guild.id, pollid)
         await ctx.send("I have ended that poll.")
 
+    @commands.command()
+    async def social(self, ctx):
+        """Shows PewDiePie's social media links"""
+        links = []
+        links.add("<:youtube:624397434096844811> **YouTube** [Click Here](https://www.youtube.com/channel/UC-lHJZR3Gqxm24_Vd_AJ5Yw)")
+        links.add("<:twitter:624397601315356682> **Twitter** [Click Here](https://twitter.com/pewdiepie)")
+        links.add("<:twitch:624397837186236417> **Twitch** [Click Here](https://www.twitch.tv/pewdiepie)")
+        links.add("<:facebook:624398107983085601> **Facebook** [Click Here](https://www.facebook.com/PewDiePie/)")
+        links.add("<:instagram:624398234214858765> **Instagram** [Click Here](https://www.instagram.com/pewdiepie/)")
+        embed = discord.Embed(title = "PewDiePie's Social Media Links", description = "\n\n".join(links), color = discord.Color.red())
+        await ctx.send(embed = embed)
+
 
 def setup(bot):
     bot.add_cog(General(bot))
