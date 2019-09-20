@@ -21,6 +21,7 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}dadjoke", value = "Sends a random dad joke", inline = False)
         em.add_field(name = f"{prefix}userinfo [@user]", value = "Gives you info about the specified user.", inline = False)
         em.add_field(name = f"{prefix}challenge [easy/medium/hard]", value = "Gives you a random challenge to complete", inline = False)
+        em.add_field(name = f"{prefix}social", value = "Shows PewDiePie's social media links", inline = False)
 
         return em
 
