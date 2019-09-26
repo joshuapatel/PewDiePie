@@ -554,5 +554,38 @@ class Economy(commands.Cog):
             embed = discord.Embed(title = "Leveling is now off!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
 
+    @commands.command(aliases = ["ask"])
+    @commands.cooldown(5, 10, commands.BucketType.member)
+    async def ask(self, ctx):
+        """Ask people for Bro Coins"""
+        fate = random.choice([True, False, True, False, True])
+        coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+        no = random.choice(["No, fuck you.", "You just got out of a Range Rover, fuckin' liar.", "*doesn't even notice you*", "ha lol ur poor fucker", f"I see you have {coins:,d} so **no**..."])
+        people = challenges = await self.bot.pool.fetch("SELECT name FROM askpeople")
+
+        if fate:
+            ctg = random.randint(1, 7000)
+            fate = True
+        else:
+            fate = False
+
+        people = random.choice(people)
+
+        personname = people["name"]
+
+        if fate:
+            em = discord.Embed(color = discord.Color.green())
+            em.add_field(name = "Ask", value = f"{personname} gave you {ctg} {self.bc_image}!")
+            await ctx.send(embed = em)
+
+            await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
+            await self.bot.pool.execute("UPDATE econ SET uses = uses + 1 WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
+            return
+        else:
+            em = discord.Embed(color = discord.Color.red())
+            em.add_field(name = "Ask", value = f"{personname}: {no}")
+            await ctx.send(embed = em)
+            return
+
 def setup(bot):
     bot.add_cog(Economy(bot))
