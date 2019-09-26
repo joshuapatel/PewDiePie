@@ -592,7 +592,7 @@ class Economy(commands.Cog):
     @commands.guild_only()
     async def addperson(self, ctx, *, person: str):
         await self.bot.pool.execute("INSERT INTO askpeople VALUES ($1)", person)
-        em = discord.Embed(title = "Added Person!", value = f"{person} has been added to the database!", color = discord.Color.red())
+        em = discord.Embed(title = "Added Person!", description = f"{person} has been added to the database!", color = discord.Color.red())
         await ctx.send(embed = em)
 
     @commands.command()
@@ -602,12 +602,12 @@ class Economy(commands.Cog):
         check = await self.bot.pool.fetchrow("SELECT name FROM askpeople WHERE name = $1", person)
 
         if check == None:
-            em = discord.Embed(title = "Not in Database.", value = "That person is not in the database.", color = discord.Color.red())
+            em = discord.Embed(title = "Not in Database.", description = "That person is not in the database.", color = discord.Color.red())
             await ctx.send(embed = em)
             return
         else:
             await self.bot.pool.execute("DELETE FROM askpeople WHERE name = $1", person)
-            em = discord.Embed(title = "Removed Person!", value = f"{person} has been removed from the database!", color = discord.Color.red())
+            em = discord.Embed(title = "Removed Person!", description = f"{person} has been removed from the database!", color = discord.Color.red())
             await ctx.send(embed = em)
             return
 
