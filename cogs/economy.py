@@ -554,7 +554,7 @@ class Economy(commands.Cog):
             embed = discord.Embed(title = "Leveling is now off!", colour = discord.Colour.dark_teal())
             await ctx.send(embed = embed)
 
-    @commands.command(aliases = ["ask"])
+    @commands.command(aliases = ["beg"])
     @commands.cooldown(1, 1800, commands.BucketType.member)
     async def ask(self, ctx):
         """Ask people for Bro Coins"""
