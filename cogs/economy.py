@@ -599,7 +599,7 @@ class Economy(commands.Cog):
     @commands.is_owner()
     @commands.guild_only()
     async def removeperson(self, ctx, *, person: str):
-        check = await self.bot.pool.fetch("SELECT name FROM askpeople WHERE name = $1", person)
+        check = await self.bot.pool.fetchrow("SELECT name FROM askpeople WHERE name = $1", person)
 
         if check == None:
             em = discord.Embed(title = "Not in Database.", value = "That person is not in the database.", color = discord.Color.red())
