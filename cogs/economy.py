@@ -555,7 +555,7 @@ class Economy(commands.Cog):
             await ctx.send(embed = embed)
 
     @commands.command(aliases = ["ask"])
-    @commands.cooldown(5, 10, commands.BucketType.member)
+    @commands.cooldown(1, 1800, commands.BucketType.member)
     async def ask(self, ctx):
         """Ask people for Bro Coins"""
         fate = random.choice([True, False, True, False, True])
