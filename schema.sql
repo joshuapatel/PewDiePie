@@ -124,3 +124,7 @@ CREATE TABLE IF NOT EXISTS leveling (
     xp BIGINT NOT NULL,
     ison BOOLEAN DEFAULT True NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS askpeople (
+    name TEXT NOT NULL,
+);
