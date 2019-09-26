@@ -560,7 +560,7 @@ class Economy(commands.Cog):
         """Ask people for Bro Coins"""
         fate = random.choice([True, False, True, False, True])
         coins, uses = await self.bot.pool.fetchrow("SELECT coins, uses FROM econ WHERE userid = $1 AND guildid = $2", ctx.author.id, ctx.guild.id)
-        no = random.choice(["No, fuck you.", "You just got out of a Range Rover, fuckin' liar.", "*doesn't even notice you*", "ha lol ur poor fucker", f"I see you have {coins:,d} so **no**..."])
+        no = random.choice(["No, fuck you.", "You just got out of a Range Rover, fuckin' liar.", "*doesn't even notice you*", "ha lol ur poor fucker", f"I see you have {coins:,d} {self.bc_image} so **no**..."])
         people = challenges = await self.bot.pool.fetch("SELECT name FROM askpeople")
 
         if fate:
