@@ -126,5 +126,5 @@ CREATE TABLE IF NOT EXISTS leveling (
 );
 
 CREATE TABLE IF NOT EXISTS askpeople (
-    name TEXT NOT NULL,
+    name TEXT NOT NULL
 );
