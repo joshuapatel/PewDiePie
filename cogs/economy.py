@@ -587,5 +587,30 @@ class Economy(commands.Cog):
             await ctx.send(embed = em)
             return
 
+    @commands.command()
+    @commands.is_owner()
+    @commands.guild_only()
+    async def addperson(self, ctx, *, person: str):
+        await self.bot.pool.execute("INSERT INTO askpeople VALUES ($1)", person)
+        em = discord.Embed(title = "Added Person!", value = f"{person} has been added to the database!", color = discord.Color.red())
+        await ctx.send(embed = em)
+
+    @commands.command()
+    @commands.is_owner()
+    @commands.guild_only()
+    async def removeperson(self, ctx, *, person: str):
+        check = await self.bot.pool.fetch("SELECT name FROM askpeople WHERE name = $1", person)
+
+        if check == None:
+            em = discord.Embed(title = "Not in Database.", value = "That person is not in the database.", color = discord.Color.red())
+            await ctx.send(embed = em)
+            return
+        else:
+            await self.bot.pool.execute("DELETE FROM askpeople WHERE name = $1", person)
+            em = discord.Embed(title = "Removed Person!", value = f"{person} has been removed from the database!", color = discord.Color.red())
+            await ctx.send(embed = em)
+            return
+
+
 def setup(bot):
     bot.add_cog(Economy(bot))
