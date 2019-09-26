@@ -51,6 +51,7 @@ class HelpPages(commands.Cog):
         em.add_field(name = f"{prefix}crime", value = "You commit a crime and gain or lose coins based on your success", inline = False)
         em.add_field(name = f"{prefix}balance (bal) [optional: user]", value = "Shows a users Bro Coin balance", inline = False)
         em.add_field(name = f"{prefix}pay", value = "Pays a user with a specified amount of Bro Coins", inline = False)
+        em.add_field(name = f"{prefix}ask", value = "Ask people for Bro Coins", inline = False)
         em.add_field(name = f"{prefix}leaderboard (lb)", value = "Shows the leaderboard for Bro Coins", inline = False)
         em.add_field(name = f"{prefix}leaderboard server (guild)", value = "Shows the leaderboard of Bro Coins for your server", inline = False)
         em.add_field(name = f"{prefix}gamble [coins/all]", value = "You can gamble a specific amount of Bro Coins", inline = False)
