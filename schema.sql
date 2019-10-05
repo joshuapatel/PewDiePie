@@ -68,12 +68,14 @@ CREATE TABLE IF NOT EXISTS daily (
     time TIMESTAMP NOT NULL
 );
 
+-- Stores the next time a user can use the weekly command
 CREATE TABLE IF NOT EXISTS weekly (
     userid BIGINT NOT NULL,
     guildid BIGINT NOT NULL,
     time TIMESTAMP NOT NULL
 );
 
+-- Stores users blacklisted from p.feedback
 CREATE TABLE IF NOT EXISTS fbblocked (
     userid BIGINT NOT NULL
 );
@@ -89,11 +91,13 @@ CREATE TABLE IF NOT EXISTS apikeys (
     openweathermap TEXT NOT NULL
 );
 
+-- Stores the donators
 CREATE TABLE IF NOT EXISTS donator (
     userid BIGINT NOT NULL,
     level BIGINT NOT NULL
 );
 
+-- Stores the active polls
 CREATE TABLE IF NOT EXISTS polls (
     guildid BIGINT NOT NULL,
     channelid BIGINT NOT NULL,
@@ -103,12 +107,14 @@ CREATE TABLE IF NOT EXISTS polls (
     pollid TEXT NOT NULL
 );
 
+-- Stores challenges for the p.challenge command
 CREATE TABLE IF NOT EXISTS challenges (
     challengename TEXT NOT NULL,
     challengetype TEXT NOT NULL,
     challengeid SERIAL PRIMARY KEY
 );
 
+-- Stores people for the p.ask command
 CREATE TABLE IF NOT EXISTS askpeople (
     name TEXT NOT NULL
 );
