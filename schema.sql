@@ -116,20 +116,6 @@ CREATE TABLE IF NOT EXISTS challenges (
     challengeid SERIAL PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS coinpermin (
-    userid BIGINT NOT NULL,
-    guildid BIGINT NOT NULL,
-    time TIMESTAMP NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS leveling (
-    userid BIGINT NOT NULL,
-    guildid BIGINT NOT NULL,
-    lvl BIGINT NOT NULL,
-    xp BIGINT NOT NULL,
-    ison BOOLEAN DEFAULT True NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS askpeople (
     name TEXT NOT NULL
 );
