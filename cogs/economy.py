@@ -51,53 +51,6 @@ class Economy(commands.Cog):
             await self.bot.pool.execute("INSERT INTO econ VALUES ($1, $2, $3)", 0, ctx.author.id, ctx.guild.id)
             self._mc.add(f"{ctx.guild.id}:{ctx.author.id}")
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.bot:
-            return
-
-        off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
-        if off is False:
-            return
-
-        user = await self.bot.pool.fetch("SELECT * FROM leveling WHERE userid = $1 AND guildid = $2", message.author.id, message.guild.id)
-        if not user:
-            await self.bot.pool.execute("INSERT INTO leveling VALUES ($1, $2, 1, 0)", message.author.id, message.guild.id)
-        
-        time = await self.bot.pool.fetchval("SELECT time FROM coinpermin WHERE userid = $1 AND guildid = $2", message.author.id, message.guild.id)
-        now = datetime.datetime.utcnow()
-        minute = now + datetime.timedelta(seconds=60)
-        
-        if time is not None and time > now:
-            return
-        else:
-            ctg = random.randint(5, 10)
-        
-        if time is None:
-            await self.bot.pool.execute("INSERT INTO coinpermin VALUES ($1, $2, $3)", message.author.id, message.guild.id, minute)
-        else:
-            await self.bot.pool.execute("UPDATE coinpermin SET time = $1 WHERE userid = $2 AND guildid = $3", minute, message.author.id, message.guild.id)
-        
-            await self.bot.pool.execute("UPDATE leveling SET xp = xp + $1 WHERE userid = $2 AND guildid = $3", ctg, message.author.id, message.guild.id)
-                
-        if await self.lvl_up(user):
-            ison = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", message.guild.id)
-            if ison is False:
-                return
-            else:
-                embed=discord.Embed(colour=discord.Colour.dark_teal(), description=f"{message.author} is now level {user['lvl'] + 1}", timestamp=datetime.datetime.utcnow())
-                await message.channel.send(embed=embed)
-
-    @commands.Cog.listener()
-    async def lvl_up(self, user):
-        cur_xp = user['xp']
-        cur_lvl = user['lvl']
-        if cur_xp == cur_lvl * 20:
-            await self.bot.pool.execute("UPDATE leveling SET lvl = $1, xp = $2 WHERE userid = $3 AND guildid = $4", cur_lvl + 1, 0, user['userid'], user['guildid'])
-            return True
-        else:
-            return False
-
     @commands.command(aliases = ["shove;", "shove", "shv", "sh", "work"])
     @commands.cooldown(5, 10, commands.BucketType.member)
     async def shovel(self, ctx):
@@ -495,64 +448,6 @@ class Economy(commands.Cog):
 
         em.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed = em)
-
-
-    @commands.command(aliases = ["level", "lvl"])
-    async def rank(self, ctx, *, member: discord.Member = None):
-        if member is None:
-            member = ctx.author
-
-        off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if off is False:
-            embed = discord.Embed(title = "Levling is currently off for this server.", colour = discord.Colour.dark_teal())
-            await ctx.send(embed = embed)
-            return
-
-        user = await self.bot.pool.fetch("SELECT * FROM leveling WHERE userid = $1 AND guildid = $2", member.id, ctx.guild.id)
-        if not user:
-            embed=discord.Embed(title=f"{member}", colour=discord.Colour.dark_teal())
-            embed.set_thumbnail(url=member.avatar_url_as(static_format="png"))
-            embed.add_field(name="Level", value="0")
-            embed.add_field(name="XP", value="0")
-            await ctx.send(embed=embed)
-        else:
-            embed=discord.Embed(title=f"{member}", colour=discord.Colour.dark_teal())
-            embed.set_thumbnail(url=member.avatar_url_as(static_format="png"))
-            embed.add_field(name="Level", value=user[0]['lvl'])
-            embed.add_field(name="XP", value=user[0]['xp'])
-            await ctx.send(embed=embed)
-
-    @commands.has_permissions(administrator = True)       
-    @commands.group(invoke_without_command = True)
-    async def leveling(self, ctx):
-        embed = discord.Embed(colour = discord.Colour.dark_teal())
-        embed.add_field(name = "p.leveling on", value = "Turns Leveling on")
-        embed.add_field(name = "p.leveling off", value = "Turns Leveling off")
-        await ctx.send(embed = embed)
-
-    @commands.has_permissions(administrator = True)       
-    @leveling.command()
-    async def on(self, ctx):
-        on = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if on is True:
-            embed = discord.Embed(title = "Leveling is already on!", colour = discord.Colour.dark_teal())
-            await ctx.send(embed = embed)
-        else:
-            await self.bot.pool.execute("UPDATE leveling SET ison = True WHERE guildid = $1", ctx.guild.id)
-            embed = discord.Embed(title = "Leveling is now on!", colour = discord.Colour.dark_teal())
-            await ctx.send(embed = embed)
-
-    @commands.has_permissions(administrator = True)
-    @leveling.command()
-    async def off(self, ctx):
-        off = await self.bot.pool.fetchval("SELECT ison FROM leveling WHERE guildid = $1", ctx.guild.id)
-        if off is False:
-            embed = discord.Embed(title = "Leveling is already off!", colour = discord.Colour.dark_teal())
-            await ctx.send(embed = embed)
-        else:
-            await self.bot.pool.execute("UPDATE leveling SET ison = False WHERE guildid = $1", ctx.guild.id)
-            embed = discord.Embed(title = "Leveling is now off!", colour = discord.Colour.dark_teal())
-            await ctx.send(embed = embed)
 
     @commands.command(aliases = ["beg"])
     @commands.cooldown(1, 1800, commands.BucketType.member)
