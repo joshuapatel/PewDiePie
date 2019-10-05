@@ -1,3 +1,4 @@
+-- Economy table for storing coin information
 CREATE TABLE IF NOT EXISTS econ (
     coins BIGINT NOT NULL,
     userid BIGINT NOT NULL,
@@ -6,29 +7,34 @@ CREATE TABLE IF NOT EXISTS econ (
     uses INT DEFAULT 0 NOT NULL
 );
 
+-- Economy shop
 CREATE TABLE IF NOT EXISTS econshop (
     roleid BIGINT NOT NULL UNIQUE,
     guildid BIGINT NOT NULL,
     reqamount BIGINT NOT NULL
 );
 
+-- Custom bot prefixes
 CREATE TABLE IF NOT EXISTS prefixes (
-    guildid BIGINT NOT NULL,
+    guildid BIGINT NOT NULL UNIQUE,
     prefix varchar(30) NOT NULL
 );
 
+-- Shovel messages
 CREATE TABLE IF NOT EXISTS shovel (
     name TEXT NOT NULL,
     fate BOOL NOT NULL,
     id SERIAL PRIMARY KEY
 );
 
+-- Crime messages
 CREATE TABLE IF NOT EXISTS crime (
     name TEXT NOT NULL,
     fate BOOL NOT NULL,
     id SERIAL PRIMARY KEY
 );
 
+-- Snipe messages and information
 CREATE TABLE IF NOT EXISTS snipe (
     contents TEXT NOT NULL,
     usr BIGINT NOT NULL,
@@ -39,29 +45,13 @@ CREATE TABLE IF NOT EXISTS snipe (
     time TIMESTAMP NOT NULL
 );
 
+-- Guild snipe settings
 CREATE TABLE IF NOT EXISTS guildsnipesettings (
     guildid BIGINT NOT NULL,
     snipeenabled BOOL NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS subgap (
-    msgid BIGINT NOT NULL UNIQUE,
-    channelid BIGINT NOT NULL UNIQUE,
-    guildid BIGINT NOT NULL UNIQUE
-);
-
-CREATE TABLE IF NOT EXISTS subgapbackup (
-    msgid BIGINT NOT NULL,
-    channelid BIGINT NOT NULL,
-    guildid BIGINT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS sub_setup (
-    guildid BIGINT NOT NULL UNIQUE,
-    first_ch TEXT NOT NULL,
-    second_ch TEXT NOT NULL
-);
-
+-- User warnings
 CREATE TABLE IF NOT EXISTS warns (
     userid BIGINT NOT NULL,
     guildid BIGINT NOT NULL,
@@ -71,6 +61,7 @@ CREATE TABLE IF NOT EXISTS warns (
     time TIMESTAMP NOT NULL
 );
 
+-- Stores the next time a user can use the daily command
 CREATE TABLE IF NOT EXISTS daily (
     userid BIGINT NOT NULL,
     guildid BIGINT NOT NULL,
@@ -87,10 +78,12 @@ CREATE TABLE IF NOT EXISTS fbblocked (
     userid BIGINT NOT NULL
 );
 
+-- Stores blacklisted users
 CREATE TABLE IF NOT EXISTS blacklisted (
-    userid BIGINT NOT NULL
+    userid BIGINT NOT NULL UNIQUE
 );
 
+-- API keys
 CREATE TABLE IF NOT EXISTS apikeys (
     dankmemer TEXT NOT NULL,
     openweathermap TEXT NOT NULL
