@@ -39,6 +39,11 @@ CREATE TABLE IF NOT EXISTS snipe (
     time TIMESTAMP NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS guildsnipesettings (
+    guildid BIGINT NOT NULL,
+    snipeenabled BOOL NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS subgap (
     msgid BIGINT NOT NULL UNIQUE,
     channelid BIGINT NOT NULL UNIQUE,
