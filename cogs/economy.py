@@ -470,7 +470,7 @@ class Economy(commands.Cog):
 
         if fate:
             em = discord.Embed(color = discord.Color.green())
-            em.add_field(name = "Ask", value = f"{personname} gave you {ctg} {self.bc_image}!")
+            em.add_field(name = "Ask", value = f"{personname} gave you {ctg:,d} {self.bc_image}!")
             await ctx.send(embed = em)
 
             await self.bot.pool.execute("UPDATE econ SET coins = coins + $1 WHERE userid = $2 AND guildid = $3", ctg, ctx.author.id, ctx.guild.id)
