@@ -4,9 +4,18 @@ from discord.ext import commands
 # -> Miscellaneous
 import re
 import inspect
+import utils.paginator as paginator
 # -> Loop
 import asyncio
 
+class Paginator(paginator.EmbedInterface):
+    def __init__(self, ctx, pag):
+        self.ctx = ctx
+        self.p = pag
+        super().__init__(self.ctx.bot, self.p, self.ctx.author)
+
+    async def send_pages(self):
+        await self.send_to(self.ctx)
 
 class Owner(commands.Cog):
     def __init__(self, bot):
@@ -177,6 +186,47 @@ class Owner(commands.Cog):
         await self.bot.pool.execute("DELETE FROM donator WHERE userid = $1", user.id)
         embed = discord.Embed(title = "Done!", color = discord.Color.dark_teal(), description = f"Removed {user.name} as a patreon.")
         await ctx.send(embed = embed)
+
+    @commands.group(invoke_without_command = True)
+    @commands.is_owner()
+    async def keys(self, ctx):
+        keys = await self.bot.pool.fetch("SELECT * FROM apikeys")
+
+        if keys == []:
+            em = discord.Embed(color = discord.Color.red())
+            em.add_field(name = "No API Keys", value = "No API Keys have been found.")
+            await ctx.send(embed = em)
+            return
+
+        pag = paginator.EmbedPaginator()
+
+        for key in keys:
+            em = discord.Embed(titile = "API Keys", color = discord.Color.red())
+            em.add_field(name = "Name:", value = key['key'])
+            em.add_field(name = "Key:", value = key['key'])
+
+
+            pag.add_page(em)
+
+        interface = Paginator(ctx, pag)
+        await interface.send_pages()
+
+    @keys.command()
+    @commands.is_owner()
+    async def add(self, ctx, key, *, name):
+        check = await self.bot.pool.fetch("SELECT * FROM apikeys WHERE name = $1", name)
+        if check:
+            em = discord.Embed(color = discord.Color.red())
+            em.add_field(name = "Error", value = "That is already a name in the DB.")
+            await ctx.send(embed = em)
+            return
+
+        await self.bot.pool.execute("INSERT INTO apikeys VALUES ($1. $2)", name, key)
+
+        embed = discord.Embed(title = "Done!", color = discord.Colour.dark_teal(), description = f"{name} has been added as a key")
+        await ctx.send(embed = embed)
+
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))

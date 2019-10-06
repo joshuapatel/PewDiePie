@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS blacklisted (
 
 -- API keys
 CREATE TABLE IF NOT EXISTS apikeys (
-    dankmemer TEXT NOT NULL,
-    openweathermap TEXT NOT NULL
+    name TEXT NOT NULL UNIQUE,
+    key TEXT NOT NULL
 );
 
 -- Stores the donators
