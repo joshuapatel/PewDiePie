@@ -202,7 +202,7 @@ class Owner(commands.Cog):
 
         for key in keys:
             em = discord.Embed(titile = "API Keys", color = discord.Color.red())
-            em.add_field(name = "Name:", value = key['key'])
+            em.add_field(name = "Name:", value = key['name'])
             em.add_field(name = "Key:", value = key['key'])
 
 
