@@ -73,7 +73,7 @@ class Image(commands.Cog):
         if user == None:
             user = ctx.author
 
-        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        dmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "dankmemer")
         if dmapikey == None:
             await ctx.send("The Dank Memer API key has not been set.")
             return
@@ -103,7 +103,7 @@ class Image(commands.Cog):
         if user == None:
             user = ctx.author
 
-        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        dmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "dankmemer")
         if dmapikey == None:
             await ctx.send("The Dank Memer API key has not been set.")
             return
@@ -133,7 +133,7 @@ class Image(commands.Cog):
         if user == None:
             user = ctx.author
 
-        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        dmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "dankmemer")
         if dmapikey == None:
             await ctx.send("The Dank Memer API key has not been set.")
             return
@@ -163,7 +163,7 @@ class Image(commands.Cog):
         if user == None:
             user = ctx.author
 
-        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        dmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "dankmemer")
         if dmapikey == None:
             await ctx.send("The Dank Memer API key has not been set.")
             return
@@ -193,7 +193,7 @@ class Image(commands.Cog):
         if user == None:
             user = ctx.author
 
-        dmapikey = await self.bot.pool.fetchval("SELECT dankmemer FROM apikeys")
+        dmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "dankmemer")
         if dmapikey == None:
             await ctx.send("The Dank Memer API key has not been set.")
             return

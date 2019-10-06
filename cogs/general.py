@@ -364,7 +364,7 @@ class General(commands.Cog):
 
     @commands.command()
     async def weather(self, ctx, *, cityname: str):
-        owmapikey = await self.bot.pool.fetchval("SELECT openweathermap FROM apikeys")
+        owmapikey = await self.bot.pool.fetchval("SELECT key FROM apikeys WHERE name = $1", "openweathermap")
         if owmapikey == None:
             await ctx.send("The OpenWeatherMap API key has not been set.")
             return

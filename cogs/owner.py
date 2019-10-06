@@ -221,7 +221,7 @@ class Owner(commands.Cog):
             await ctx.send(embed = em)
             return
 
-        await self.bot.pool.execute("INSERT INTO apikeys VALUES ($1. $2)", name, key)
+        await self.bot.pool.execute("INSERT INTO apikeys VALUES ($1, $2)", name, key)
 
         embed = discord.Embed(title = "Done!", color = discord.Colour.dark_teal(), description = f"{name} has been added as a key")
         await ctx.send(embed = embed)
