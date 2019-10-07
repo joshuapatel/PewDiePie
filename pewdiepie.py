@@ -6,6 +6,7 @@ import config
 # -> Miscellaneous
 import random
 import datetime
+from jishaku import help_command
 # -> Database
 import asyncpg
 # -> Loop
@@ -69,6 +70,8 @@ class PewDiePie(commands.AutoShardedBot):
         return user.id in self.owners
 
     async def on_connect(self):
+
+        self.help_command = help_command.MinimalEmbedPaginatorHelp()
         # Database
         pool_creds = {
             "user": config.db_user,
