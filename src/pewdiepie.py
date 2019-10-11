@@ -109,7 +109,7 @@ class PewDiePie(commands.AutoShardedBot):
                 print("\n" + str(error))
 
     async def start(self):
-        await self.login(config.privtoken) # pylint: disable=no-member
+        await self.login(config.pubtoken) # pylint: disable=no-member
         try:
             await self.connect()
         except KeyboardInterrupt:
