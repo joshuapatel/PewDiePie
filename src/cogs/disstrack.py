@@ -6,7 +6,7 @@ class Disstrack(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def play_song(self, ctx, name: str = "lasagna.mp3"):
+    async def play_song(self, ctx, name: str):
         if ctx.author.voice != None:
             try:
                 await ctx.author.voice.channel.connect()
@@ -41,7 +41,7 @@ class Disstrack(commands.Cog):
 
     @commands.group(invoke_without_command = True)
     async def disstrack(self, ctx):
-        await self.play_song(ctx)
+        await self.play_song(ctx, "lasagna.mp3")
 
     @disstrack.command(name = "stop", aliases = ["leave", "end", "disconnect"])
     async def disstrack_stop(self, ctx):

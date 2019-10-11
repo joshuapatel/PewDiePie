@@ -1,5 +1,4 @@
-*/
-!/cogs/
-!/utils/
-config.py
+__pycache__/
+.vscode/
+assets/original.py
 env/

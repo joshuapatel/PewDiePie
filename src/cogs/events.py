@@ -1,7 +1,6 @@
 # -> Discord
 import discord
-from discord.ext import commands
-from discord.ext import tasks
+from discord.ext import commands, tasks
 # -> Miscellaneous
 import datetime
 # -> Loop

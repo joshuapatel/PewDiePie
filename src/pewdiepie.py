@@ -6,7 +6,6 @@ import config
 # -> Miscellaneous
 import random
 import datetime
-from jishaku import help_command
 # -> Database
 import asyncpg
 # -> Loop
@@ -31,7 +30,7 @@ async def custom_prefix(bot, message):
     else:
         return commands.when_mentioned_or(prefix)(bot, message)
 
-extensions = ["jishaku", "cogs.functions", "cogs.help_pages"]
+extensions = ["jishaku", "cogs.functions"]
 
 for f in os.listdir("cogs"):
     if f.endswith(".py") and not f"cogs.{f[:-3]}" in extensions:
@@ -70,8 +69,6 @@ class PewDiePie(commands.AutoShardedBot):
         return user.id in self.owners
 
     async def on_connect(self):
-
-        self.help_command = help_command.MinimalEmbedPaginatorHelp()
         # Database
         pool_creds = {
             "user": config.db_user,
@@ -88,7 +85,7 @@ class PewDiePie(commands.AutoShardedBot):
             print("\n" + str(error))
             await super().logout()
 
-        with open("schema.sql", "r") as schema:
+        with open("../schema.sql", "r") as schema:
             await self.pool.execute(schema.read())
 
         # Prefixes
@@ -112,7 +109,7 @@ class PewDiePie(commands.AutoShardedBot):
                 print("\n" + str(error))
 
     async def start(self):
-        await self.login(config.pubtoken) # pylint: disable=no-member
+        await self.login(config.privtoken) # pylint: disable=no-member
         try:
             await self.connect()
         except KeyboardInterrupt:
