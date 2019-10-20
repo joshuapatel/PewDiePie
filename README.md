@@ -6,10 +6,6 @@ Do you have any more questions about the bot? Send a DM to **Kowlin#4417 or A Tr
 
 I made this bot because I was very intrigued into the PewDiePie vs T-Series war. I wanted to do my part and make a bot.
 
-## How do I get authorized for the subgap command?
-
-You do not need to get authorized for this command anymore. Simply run `p.subgap` in your subgap channel and it should work. You can change the channels being compared by running `p.setup`.
-
 ## How should I run the bot?
 
 I strongly recommend that you [invite the bot](https://discordapp.com/oauth2/authorize?client_id=500868806776979462&scope=bot&permissions=338717761). Nevertheless, here are the instructions.
