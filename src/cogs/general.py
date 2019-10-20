@@ -100,7 +100,7 @@ class General(commands.Cog):
         em.add_field(name = "Bot Latency", value = f"{botlat} ms")
         em.add_field(name = "Server Count", value = f"{len(self.bot.guilds):,d} servers")
         em.add_field(name = "Vote", value = f"[Vote for me](https://discordbots.org/bot/{self.bot.user.id}/vote)")
-        em.add_field(name = "Docs", value = f"[Documentation](docs.pewdiepiebot.tech)")
+        em.add_field(name = "Docs", value = f"[Documentation](https://docs.pewdiepiebot.tech)")
         await ctx.send(embed = em)
 
     @commands.command()
