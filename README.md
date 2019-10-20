@@ -12,7 +12,7 @@ You do not need to get authorized for this command anymore. Simply run `p.subgap
 
 ## How should I run the bot?
 
-I strongly recommend that you [invite the bot](https://discordbots.org/bot/500868806776979462/). Nevertheless, here are the instructions.
+I strongly recommend that you [invite the bot](https://discordapp.com/oauth2/authorize?client_id=500868806776979462&scope=bot&permissions=338717761). Nevertheless, here are the instructions.
 
 ### Instructions
 
@@ -48,33 +48,41 @@ Run `python pewdiepie.py`
 ### General Commands
 |Name|Description|
 |----|-----------|
+|challenge|Sends a challenge to complete|
 |disstrack|Plays Bitch Lasagna in a voice channel|
 |disstrack stop (leave)|Disconnects from the voice channel|
 |congrats|Plays Congratulations in a voice channel|
 |congrats stop (leave)|Disconnects from the voice channel|
-|subcount|Shows T-Series' and PewDiePie's subscriber count|
-|subgap|Sends a message then automatically starts updating it every 30 seconds|
-|subgap stop (remove)|Stops the subgap message from updating in your server|
-|setup|Changes the channels in the subcount and subgap commands|
-|randomvid|Returns a random PewDiePie or T-Series video|
-|youtube (yt)|Sends you the link to PewDiePie's and T-Series' YouTube channel|
-|spoiler|Sends any message you provide as a spoiler in an annoying form|
+|8ball [question]||
+|dadjoke|Sends a really funny joke|
+|endpoll [id]||
+|joke|Sends a funny joke|
 |meme|Gets and sends a beautiful meme picked straight from Reddit|
+|poll [message]|Starts a poll|
+|randomvid|Returns a random PewDiePie or T-Series video|
+|serverinfo|Sends information on the server|
+|social||
+|spoiler|Sends any message you provide as a spoiler in an annoying form|
+|userinfo||
+|weather [location]||
+|youtube (yt)|Sends you the link to PewDiePie's and T-Series' YouTube channel|
 
 ### Bro Coin Commands (economy)
 |Name|Description|
 |----|-----------|
-|shovel|You work all day by shoveling for Bro Coins|
-|crime|You commit a crime and gain or lose coins based on your success|
+|ask||
 |balance (bal)|Informs you on the amount of Bro Coins you have|
-|pay|Pays another user a specified amount of Bro Coins|
+|crime|You commit a crime and gain or lose coins based on your success|
 |daily|Reedems your daily bonus of Bro Coins|
+|gamble|Gambles all or a specific amount of Bro Coins|
 |leaderboard (lb)|Shows the leaderboard for Bro Coins|
 |leaderboard server (guild)|Shows the leaderboard of Bro Coins for your server|
-|gamble|Gambles all or a specific amount of Bro Coins|
+|pay|Pays another user a specified amount of Bro Coins|
+|shovel|You work all day by shoveling for Bro Coins|
+|statistics (stats)|Statistics on Bro Coin usage|
 |steal (rob)|Steals from a user|
 |transfer|Sends any amount that you specify to another server. The max amount is 50% of your coins|
-|statistics (stats)|Statistics on Bro Coin usage|
+|phrase [id]||
 
 ### Shop Commands for Bro Coin
 |Name|Description|
@@ -99,11 +107,11 @@ Run `python pewdiepie.py`
 |Name|Description|
 |----|-----------|
 |ban|Bans a member. Reason is optional|
+|deafen|Deafens a user. They must be in a voice channel|
 |kick|Kicks a member. Reason is optional|
 |purge|Purges / clears a specified amount of messages|
-|deafen|Deafens a user. They must be in a voice channel|
-|undeafen|Undeafens a user. They must be in a voice channel|
 |setnick|Sets a user's nickname. If none is provided, it will be reset|
+|undeafen|Undeafens a user. They must be in a voice channel|
 |warn|Warns a user|
 |warns|Retrieves warnings for the user specified|
 
