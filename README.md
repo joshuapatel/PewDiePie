@@ -53,24 +53,24 @@ Run `python pewdiepie.py`
 |disstrack stop (leave)|Disconnects from the voice channel|
 |congrats|Plays Congratulations in a voice channel|
 |congrats stop (leave)|Disconnects from the voice channel|
-|8ball [question]||
+|8ball [question]|Ask the bot a question|
 |dadjoke|Sends a really funny joke|
-|endpoll [id]||
+|endpoll [id]|Ends the specified poll|
 |joke|Sends a funny joke|
 |meme|Gets and sends a beautiful meme picked straight from Reddit|
 |poll [message]|Starts a poll|
 |randomvid|Returns a random PewDiePie or T-Series video|
 |serverinfo|Sends information on the server|
-|social||
+|social|Sends PewDiePie's socials|
 |spoiler|Sends any message you provide as a spoiler in an annoying form|
-|userinfo||
-|weather [location]||
+|userinfo [optional: user]|Sends information on a specified user|
+|weather [location]|Sends weather on a location|
 |youtube (yt)|Sends you the link to PewDiePie's and T-Series' YouTube channel|
 
 ### Bro Coin Commands (economy)
 |Name|Description|
 |----|-----------|
-|ask||
+|ask|Ask a celeberty for money|
 |balance (bal)|Informs you on the amount of Bro Coins you have|
 |crime|You commit a crime and gain or lose coins based on your success|
 |daily|Reedems your daily bonus of Bro Coins|
@@ -82,7 +82,7 @@ Run `python pewdiepie.py`
 |statistics (stats)|Statistics on Bro Coin usage|
 |steal (rob)|Steals from a user|
 |transfer|Sends any amount that you specify to another server. The max amount is 50% of your coins|
-|phrase [id]||
+|phrase [id]|Retrieves a phrase|
 
 ### Shop Commands for Bro Coin
 |Name|Description|
