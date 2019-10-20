@@ -79,6 +79,7 @@ Run `python pewdiepie.py`
 |steal (rob)|Steals from a user|
 |transfer|Sends any amount that you specify to another server. The max amount is 50% of your coins|
 |phrase [id]|Retrieves a phrase|
+|weekly (patreon command)|Gives you weekly bro coins|
 
 ### Shop Commands for Bro Coin
 |Name|Description|
@@ -110,6 +111,17 @@ Run `python pewdiepie.py`
 |undeafen|Undeafens a user. They must be in a voice channel|
 |warn|Warns a user|
 |warns|Retrieves warnings for the user specified|
+
+### Image Commands
+|Name|Description|
+|----|-----------|
+|america|Sends a Flag over your profile pic|
+|changemymind [message]|Sends a banner with a change my mind message|
+|gay [optional: user]|Sends a pride flag over a users pfp|
+|salty [optional: user]|Sprinkles salt on a users pfp|
+|triggered [optional: user]|Sends a triggered picture over a users pfp|
+|trumptweet [message]|Sends a tweet ad Trump|
+|wanted [optional: user]|Sends a wanted poster with a users pfp|
 
 ### Other Commands
 |Name|Description|
