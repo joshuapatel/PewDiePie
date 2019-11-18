@@ -19,7 +19,6 @@ class Events(commands.Cog):
         self.autostatus.start()
 
     def cog_unload(self):
-        self.dbl.cancel()
         self.autostatus.cancel()
 
     @commands.Cog.listener()
