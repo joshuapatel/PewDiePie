@@ -16,7 +16,6 @@ class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.JOIN_LEAVE_LOG = 501089724421767178
-        self.dbl.start()
         self.autostatus.start()
 
     def cog_unload(self):
@@ -70,23 +69,6 @@ class Events(commands.Cog):
 
         em.timestamp = datetime.datetime.utcnow()
         await logchannel.send(embed = em)
-
-    @tasks.loop(minutes = 30)
-    async def dbl(self):
-        if config.dbltoken is None:
-            self.dbl.cancel()
-
-        base = "https://discordbots.org/api"
-
-        async with aiohttp.ClientSession() as cs:
-            post = await cs.post(f"{base}/bots/{self.bot.user.id}/stats",
-            headers = {"Authorization": config.dbltoken}, data = {"server_count": len(self.bot.guilds)})
-            post = await post.json()
-
-            if "error" in post:
-                print(f"Couldn't post server count, {post['error']}")
-            else:
-                print("Posted server count on DBL")
 
     @tasks.loop(seconds = 30)
     async def autostatus(self):
