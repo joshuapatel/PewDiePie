@@ -83,10 +83,5 @@ class Events(commands.Cog):
     async def before_autostatus(self):
         await self.bot.wait_until_ready()
 
-    @dbl.before_loop
-    async def before_dbl(self):
-        await self.bot.wait_until_ready()
-
-
 def setup(bot):
     bot.add_cog(Events(bot))
