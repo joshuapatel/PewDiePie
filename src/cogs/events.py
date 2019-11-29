@@ -23,9 +23,11 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
+        prefix = self.bot.prefixes.get(ctx.guild.id, None) or "p."
         print()
         print(f"COMPLETED COMMAND: {ctx.command.name}. Invoked by: {ctx.author.name}#{ctx.author.discriminator}")
         print(f"GUILD: {ctx.guild.name} | GUILD ID: {ctx.guild.id}\nUSER ID: {ctx.author.id} | CHANNEL ID: {ctx.channel.id}")
+        await ctx.send(f"The bot is going away. Read more in the Discord server (run `{prefix}info` to get the invite)")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -71,13 +73,9 @@ class Events(commands.Cog):
 
     @tasks.loop(seconds = 30)
     async def autostatus(self):
-            watching = ["Minecraft Videos", f"for p.help in {len(self.bot.guilds):,d} servers"]
+        watching = "The bot is going away"
 
-            for w in watching:
-                await self.bot.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = w))
-                await asyncio.sleep(30)
-
-            await self.bot.change_presence(activity = discord.Game(name = "with NEW Challenges!"))
+        await self.bot.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = watching))
 
     @autostatus.before_loop
     async def before_autostatus(self):
