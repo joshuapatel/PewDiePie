@@ -27,7 +27,7 @@ class Events(commands.Cog):
         print()
         print(f"COMPLETED COMMAND: {ctx.command.name}. Invoked by: {ctx.author.name}#{ctx.author.discriminator}")
         print(f"GUILD: {ctx.guild.name} | GUILD ID: {ctx.guild.id}\nUSER ID: {ctx.author.id} | CHANNEL ID: {ctx.channel.id}")
-        await ctx.send(f"The bot is going away. Read more in the Discord server (run `{prefix}info` to get the invite)")
+        await ctx.send(f"The bot is going away. Read more in the announcements channel in the Discord server (run `{prefix}info` to get the invite)")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
